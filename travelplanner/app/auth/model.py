@@ -1,4 +1,4 @@
-from app import db
+from .views import db
 from werkzeug.security import generate_password_hash
 
 class User(db.model):
