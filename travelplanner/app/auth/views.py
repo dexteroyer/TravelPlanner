@@ -1,8 +1,7 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, session
 from werkzeug.security import check_password_hash
-from ..forms import LoginForm, RegisterForm
-from ..model import User
-
+from .forms import LoginForm
+from .model import User
 
 auth = Flask(__name__)
 auth.secret_key = "flask"
