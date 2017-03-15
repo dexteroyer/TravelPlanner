@@ -1,7 +1,7 @@
-from .views import db
+from .. import db
 from werkzeug.security import generate_password_hash
 
-class User(db.model):
+class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
