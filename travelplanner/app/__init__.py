@@ -8,7 +8,6 @@ from auth.views import auth_blueprint
 
 app.register_blueprint(auth_blueprint)
 
-app = Flask(__name__)
 app.debug = True
 
 
