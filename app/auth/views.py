@@ -4,8 +4,6 @@ from forms import LoginForm
 from model import User
 
 auth = Flask(__name__)
-auth.secret_key = "flask"
-
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
                            static_url_path='/static/')
 
@@ -16,10 +14,10 @@ def flask():
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
-    form = LoginForm(request.form)
+    form = LoginForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            user = User.query.filter_by(name=request.form['username']).first()
+            user = User.query.filter_by(username=request.form['username']).first()
             if user is not None and check_password_hash(user.password, request.form['password']):
                 session['logged_in'] = True
                 flash('You are now logged in!')
