@@ -1,12 +1,13 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, session
 from werkzeug.security import check_password_hash
-from .forms import LoginForm
-from .model import User
+from forms import LoginForm
+from model import User
 
 auth = Flask(__name__)
 auth.secret_key = "flask"
 
-auth_blueprint = Blueprint('auth_blueprint', __name__)
+auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
+                           static_url_path='/static/')
 
 @auth_blueprint.route('/')
 def flask():
@@ -25,7 +26,7 @@ def login():
                 return redirect(url_for(''))
         else:
             error = 'Invalid username or password'
-    return render_template('', form=form, error=error)
+    return render_template('signin.html', form=form, error=error)
 
 @auth_blueprint.route('/logout')
 def logout():

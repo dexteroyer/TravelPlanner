@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head><title>Sign In</title>
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap-theme.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/register.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Sign In</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail_1" class="form-control" placeholder="Email address" required>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword_1" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <div>
+          <h3>Don't have an account?<a href="{{ url_for('auth_blueprint.login') }}">Sign Up</a></h3>
+        </div>
+      </form>
+
+    </div> <!-- /container -->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="{{ url_for('.static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>

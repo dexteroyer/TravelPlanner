@@ -1,4 +1,4 @@
-from .. import db
+from app import db
 from werkzeug.security import generate_password_hash
 
 class User(db.Model):
@@ -16,3 +16,6 @@ class User(db.Model):
 
     def __repr__(self):
         return '<username -{}>'.format(self.username)
+
+db.create_all()
+
