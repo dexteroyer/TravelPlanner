@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, session
 from werkzeug.security import check_password_hash
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 from model import User
+from app import db
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
@@ -10,6 +11,10 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='template
 @auth_blueprint.route('/home')
 def home():
     return "Dashboard"
+
+@auth_blueprint.route('/index/<name>')
+def index(name):
+    return '<h1>Welcome, %s!</h1>' % name
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
@@ -20,10 +25,28 @@ def login():
             if user is not None and check_password_hash(user.password, request.form['password']):
                 session['logged_in'] = True
                 flash('You are now logged in!')
+<<<<<<< HEAD
                 return redirect(url_for('auth_blueprint.home'))
         else:
             return 'Invalid username or password!'
     return render_template('signin.html', form=form)
+=======
+                return redirect(url_for('auth_blueprint.index', name=request.form['username']))
+        else:
+            error = 'Invalid username or password'
+    return render_template('signin.html', form=form, error=error)
+  
+@auth_blueprint.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'])
+        db.session.add(user)
+        db.session.commit()
+        flash('Log In')
+        return redirect(url_for('auth_blueprint.login'))
+    return render_template('registration.html', form=form)
+>>>>>>> ca0acbb19b8aa4f141cdece13055fd1045d8d948
 
 @auth_blueprint.route('/logout')
 def logout():
