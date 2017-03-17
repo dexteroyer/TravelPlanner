@@ -26,7 +26,6 @@ class RegisterForm(FlaskForm):
             DataRequired(), EqualTo('password', message='Passwords must match.')
         ]
     )
-    submit = SubmitField("Create account")
     
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
