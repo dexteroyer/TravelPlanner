@@ -12,9 +12,9 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='template
 def flask():
     return "Hello World!"
 
-@auth_blueprint.route('/index')
-def index():
-    return "Logged In Successfully"
+@auth_blueprint.route('/index/<name>')
+def index(name):
+    return '<h1>Welcome, %s!</h1>' % name
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
@@ -26,7 +26,7 @@ def login():
             if user is not None and check_password_hash(user.password, request.form['password']):
                 session['logged_in'] = True
                 flash('You are now logged in!')
-                return redirect(url_for('auth_blueprint.index'))
+                return redirect(url_for('auth_blueprint.index', name=request.form['username']))
         else:
             error = 'Invalid username or password'
     return render_template('signin.html', form=form, error=error)
