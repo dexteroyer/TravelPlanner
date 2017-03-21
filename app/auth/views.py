@@ -1,20 +1,25 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, session
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
 from forms import LoginForm, RegisterForm
 from model import User
-from app import db
+from app import db, app
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='static',
                            static_url_path='/static/')
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @auth_blueprint.route('/home')
+@login_required
 def home():
-    return "Dashboard"
-
-@auth_blueprint.route('/index/<name>')
-def index(name):
-    return '<h1>Welcome, %s!</h1>' % name
+    return render_template('dashboard.html', username=current_user.username)
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
@@ -24,13 +29,21 @@ def login():
         if form.validate_on_submit():
             user = User.query.filter_by(username=request.form['username']).first()
             if user is not None and check_password_hash(user.password, request.form['password']):
-                session['logged_in'] = True
+                login_user(user)
                 flash('You are now logged in!')
+<<<<<<< HEAD
             return redirect(url_for('auth_blueprint.index', name=request.form['username']))
         else:
             error = 'Invalid username or password'
     return render_template('signin.html', form=form, error=error)
   
+=======
+                return redirect(url_for('auth_blueprint.home'))
+        else:
+            return 'Invalid username or password!'
+    return render_template('signin.html', form=form)
+
+>>>>>>> f5635260922e6c0c5430f0d71495f9f701968db6
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -41,9 +54,14 @@ def register():
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
     return render_template('registration.html', form=form)
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5635260922e6c0c5430f0d71495f9f701968db6
 
 @auth_blueprint.route('/logout')
+@login_required
 def logout():
-    session.pop('logged_in', None)
+    logout_user()
     flash('You were logged out.')
-    return redirect(url_for('auth_blueprint.home'))
+    return redirect(url_for('auth_blueprint.login'))
