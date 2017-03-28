@@ -10,14 +10,17 @@ from auth import model
 bootstrap = Bootstrap(app)
 app.config.from_object('config')
 app.config['SECRET_KEY'] = 'flaskimplement'
-<<<<<<< HEAD
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/travelplanner'
-=======
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/travelplanner'
->>>>>>> ca0acbb19b8aa4f141cdece13055fd1045d8d948
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/travelplannerdb'
+
 
 from auth.views import auth_blueprint
 app.register_blueprint(auth_blueprint)
+
+db.create_all()
+
+
 
 app.debug = True
 
