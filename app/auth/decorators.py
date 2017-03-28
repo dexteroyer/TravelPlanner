@@ -2,7 +2,6 @@ from functools import wraps
 from flask import abort, flash
 from flask_login import current_user
 
-
 def required_roles(*roles):
    def wrapper(f):
       @wraps(f)
@@ -17,7 +16,6 @@ def required_roles(*roles):
 def get_current_user_role():
     r_id = current_user.getRole_id()
     roles = ['Admin', 'Moderator', 'User']
-    role = ""
     for i in range(1,4):
 	    if r_id==i:
 	        return roles[i-1]
