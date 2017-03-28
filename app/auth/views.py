@@ -7,7 +7,7 @@ from app import db, app
 from decorators import required_roles
 
 auth = Flask(__name__)
-auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='static',
+auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
                            static_url_path='/static/')
 
 login_manager = LoginManager()
@@ -34,34 +34,23 @@ def login():
             if user is not None and check_password_hash(user.password, request.form['password']):
                 login_user(user)
                 flash('You are now logged in!')
-<<<<<<< HEAD
-            return redirect(url_for('auth_blueprint.index', name=request.form['username']))
+            return redirect(url_for('auth_blueprint.home', name=request.form['username']))
         else:
             error = 'Invalid username or password'
-    return render_template('signin.html', form=form, error=error)
+    return render_template('users/signin.html', form=form, error=error)
   
-=======
-                return redirect(url_for('auth_blueprint.home'))
-        else:
-            return 'Invalid username or password!'
-    return render_template('signin.html', form=form)
 
->>>>>>> f5635260922e6c0c5430f0d71495f9f701968db6
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=2)
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)
         db.session.add(user)
         db.session.commit()
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
-    return render_template('registration.html', form=form)
-<<<<<<< HEAD
-=======
-
->>>>>>> f5635260922e6c0c5430f0d71495f9f701968db6
+    return render_template('users/registration.html', form=form)
 
 @auth_blueprint.route('/logout')
 @login_required
