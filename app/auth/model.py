@@ -18,13 +18,13 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
-class Role(db.Model):
-    __tablename__ = "role"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(15), unique=True)
-    default = db.Column(db.Boolean, default=False, index=True)
-    permissions = db.Column(db.Integer)
-    users = db.relationship('User', backref='role', lazy='dynamic')
+# class Role(db.Model):
+#     __tablename__ = "role"
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(15), unique=True)
+#     default = db.Column(db.Boolean, default=False, index=True)
+#     permissions = db.Column(db.Integer)
+#     users = db.relationship('User', backref='role', lazy='dynamic')
 
 
 

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, session
+from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
 from forms import LoginForm, RegisterForm
@@ -7,7 +7,7 @@ from app import db, app
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='static',
-                           static_url_path='/static/')
+                           static_url_path='static')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -31,19 +31,11 @@ def login():
             if user is not None and check_password_hash(user.password, request.form['password']):
                 login_user(user)
                 flash('You are now logged in!')
-<<<<<<< HEAD
-            return redirect(url_for('auth_blueprint.index', name=request.form['username']))
+            return redirect(url_for('auth_blueprint.home', name=request.form['username']))
         else:
             error = 'Invalid username or password'
     return render_template('signin.html', form=form, error=error)
-  
-=======
-                return redirect(url_for('auth_blueprint.home'))
-        else:
-            return 'Invalid username or password!'
-    return render_template('signin.html', form=form)
 
->>>>>>> f5635260922e6c0c5430f0d71495f9f701968db6
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -54,10 +46,6 @@ def register():
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
     return render_template('registration.html', form=form)
-<<<<<<< HEAD
-=======
-
->>>>>>> f5635260922e6c0c5430f0d71495f9f701968db6
 
 @auth_blueprint.route('/logout')
 @login_required
