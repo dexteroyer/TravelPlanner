@@ -1,6 +1,8 @@
 from app import db
-from flask_login import UserMixin, AnonymousUserMixin
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
+from flask import request
+import hashlib
 from sqlalchemy.orm import backref
 
 class User(db.Model, UserMixin):
@@ -12,7 +14,15 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     roles = db.relationship('Role', back_populates='users')
-
+    #profile
+    first_name = db.Column(db.String(128))
+    last_name = db.Column(db.String(128))
+    address = db.Column(db.String(150))
+    city = db.Column(db.String(30))
+    country = db.Column(db.String(30))
+    birth_date = db.Column(db.Date)
+    contact_num = db.Column(db.Integer(10))
+    description = db.Column(db.String(300))
     
     def __init__(self, username, email, password, role_id):
         self.username = username
@@ -30,6 +40,14 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
+    def gravatar(self, size=100, default='identicon', rating='g'):
+        if request.is_secure:
+            url = 'https://secure.gravatar.com/avatar'
+        else:
+            url = 'http://www.gravatar.com/avatar'
+        hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
+            url=url, hash=hash, size=size, default=default, rating=rating)
 
 class Role(db.Model):
     __tablename__ = 'roles'

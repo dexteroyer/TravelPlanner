@@ -1,23 +1,23 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError, SubmitField
+from flask_wtf import Form
+from wtforms import StringField, PasswordField, ValidationError, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from model import User
 
-class LoginForm(FlaskForm):
+class LoginForm(Form):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
 
-class RegisterForm(FlaskForm):
+class RegisterForm(Form):
     username = StringField(
-        'username',
+        'Username',
         validators=[DataRequired(), Length(min=3, max=25)]
     )
     email = StringField(
-        'email',
+        'Email',
         validators=[DataRequired(), Email(message=None), Length(min=6, max=40)]
     )
     password = PasswordField(
-        'password',
+        'Password',
         validators=[DataRequired(), Length(min=6, max=25)]
     )
     confirm = PasswordField(
@@ -34,3 +34,13 @@ class RegisterForm(FlaskForm):
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
+
+class EditForm(Form):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    country = StringField('Country', validators=[DataRequired()])
+    birth_date = DateField('Birth Date(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    contact_num = StringField('Contact Number', validators=[DataRequired()])
+    description = StringField('Description')

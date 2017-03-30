@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles
@@ -23,6 +23,43 @@ def load_user(user_id):
 @required_roles('User')
 def home():
     return render_template('dashboard.html', username=current_user.username)
+
+@auth_blueprint.route('/userprofile/<username>')
+@login_required
+@required_roles('User')
+def user_profile(username):
+    user = User.query.filter_by(username=username).first()
+    return render_template('userprofile.html', user=user)
+
+@auth_blueprint.route('/userprofile/edit/<username>', methods = ['GET', 'POST'])
+@login_required
+@required_roles('User')
+def edit(username):
+    user = User.query.filter_by(username=username).first()
+    form = EditForm()
+    if form.validate_on_submit():
+        current_user.first_name = form.first_name.data
+        current_user.last_name = form.last_name.data
+        current_user.address = form.address.data
+        current_user.city = form.city.data
+        current_user.country = form.country.data
+        current_user.birth_date = form.birth_date.data
+        current_user.contact_num = form.contact_num.data
+        current_user.description = form.description.data
+        db.session.add(current_user)
+        db.session.commit()
+        flash("Your changes have been saved.")
+        return render_template('userprofile.html', user=user)
+    else:
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
+        form.address.data = current_user.address
+        form.city.data = current_user.city
+        form.country.data = current_user.country
+        form.birth_date.data = current_user.birth_date
+        form.contact_num.data = current_user.contact_num
+        form.description.data = current_user.description
+        return render_template('edit_profile.html', user=user, form=form)
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
