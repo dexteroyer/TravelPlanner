@@ -22,6 +22,10 @@ class User(db.Model, UserMixin):
 
     def getRole_id(self):
         return self.role_id
+
+    def getRole_name(self):
+        role_name = Role.query.filter_by(id=self.getRole_id()).first()
+        return role_name.name
         
     def __repr__(self):
         return '<username {}>'.format(self.username)
