@@ -20,12 +20,14 @@ class User(db.Model, UserMixin):
         self.password = generate_password_hash(password)
         self.role_id = role_id
 
-    def getRole_id(self):
-        return self.role_id
-
-    def getRole_name(self):
-        role_name = Role.query.filter_by(id=self.getRole_id()).first()
-        return role_name.name
+    def isAuthenticated(self):
+        return True
+ 
+    def is_active(self):
+        return True
+ 
+    def is_anonymous(self):
+        return False
         
     def __repr__(self):
         return '<username {}>'.format(self.username)

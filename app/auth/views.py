@@ -12,7 +12,7 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='template
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'auth_blueprint.login'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -32,7 +32,8 @@ def login():
         if form.validate_on_submit():
             user = User.query.filter_by(username=request.form['username']).first()
             if user is not None and check_password_hash(user.password, request.form['password']):
-                login_user(user)
+                user.authenticated = True
+                login_user(user, remember=True)
                 flash('You are now logged in!')
             return redirect(url_for('auth_blueprint.home', name=request.form['username']))
         else:
@@ -45,7 +46,7 @@ def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=1)
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)
         db.session.add(user)
         db.session.commit()
         flash('Log In')
@@ -55,6 +56,8 @@ def register():
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
+    user = current_user
+    user.authenticated = False
     logout_user()
     flash('You were logged out.')
     return redirect(url_for('auth_blueprint.login'))

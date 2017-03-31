@@ -8,11 +8,12 @@ def required_roles(*roles):
       @wraps(f)
       def wrapped(*args, **kwargs):
          if get_role() not in roles:
-            flash('Authentication error, please check your details and try again','error')
             abort(403)
+            flash('Authentication error, please check your details and try again','error')
          return f(*args, **kwargs)
       return wrapped
    return wrapper
  
 def get_role():
-    return current_user.getRole_name()
+    role = Role.query.filter_by(id=current_user.role_id).first()
+    return role.name
