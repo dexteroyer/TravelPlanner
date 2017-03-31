@@ -21,8 +21,6 @@ app.register_blueprint(auth_blueprint)
 
 db.create_all()
 
-
-
 app.debug = True
 
 

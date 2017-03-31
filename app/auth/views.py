@@ -7,14 +7,9 @@ from app import db, app
 from decorators import required_roles
 
 auth = Flask(__name__)
-<<<<<<< HEAD
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='static',
                            static_url_path='static')
-=======
-auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
-                           static_url_path='/static/')
 
->>>>>>> de2c6e3ae0d186d2f15c0deb79d53bc31def63b9
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -42,12 +37,8 @@ def login():
             return redirect(url_for('auth_blueprint.home', name=request.form['username']))
         else:
             error = 'Invalid username or password'
-<<<<<<< HEAD
-    return render_template('signin.html', form=form, error=error)
-=======
+
     return render_template('users/signin.html', form=form, error=error)
-  
->>>>>>> de2c6e3ae0d186d2f15c0deb79d53bc31def63b9
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -59,11 +50,10 @@ def register():
         db.session.commit()
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
-<<<<<<< HEAD
-    return render_template('registration.html', form=form)
-=======
+
     return render_template('users/registration.html', form=form)
->>>>>>> de2c6e3ae0d186d2f15c0deb79d53bc31def63b9
+
+
 
 @auth_blueprint.route('/logout')
 @login_required

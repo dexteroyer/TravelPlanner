@@ -30,7 +30,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
-<<<<<<< HEAD
 # class Role(db.Model):
 #     __tablename__ = "role"
 #     id = db.Column(db.Integer, primary_key=True)
@@ -38,7 +37,7 @@ class User(db.Model, UserMixin):
 #     default = db.Column(db.Boolean, default=False, index=True)
 #     permissions = db.Column(db.Integer)
 #     users = db.relationship('User', backref='role', lazy='dynamic')
-=======
+
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -61,14 +60,6 @@ class Role(db.Model):
                 role = Role(name=r)
             db.session.add(role)
         db.session.commit()
-        
-
-        
-
-
-
-
->>>>>>> de2c6e3ae0d186d2f15c0deb79d53bc31def63b9
 
 
 
