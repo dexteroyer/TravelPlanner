@@ -6,6 +6,8 @@ from model import User, Role
 from app import db, app
 from decorators import required_roles
 from flask_admin import Admin
+#from flask_admin.contrib.sqla import ModelView
+from flask_admin import BaseView, expose
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
@@ -105,3 +107,12 @@ def logout():
     logout_user()
     flash('You were logged out.')
     return redirect(url_for('auth_blueprint.login'))
+
+
+class NotificationView(BaseView):
+    @expose('/')
+    def index(self):
+        return self.render('admin/notify.html')
+
+#admin.add_view(ModelView(User, db.session))
+#admin.add_view(NotificationView(name='Notification', endpoint='notify'))
