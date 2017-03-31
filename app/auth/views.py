@@ -6,8 +6,6 @@ from model import User, Role
 from app import db, app
 from decorators import required_roles
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from flask_admin import BaseView, expose
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static',
@@ -19,15 +17,18 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @auth_blueprint.route('/home')
 @login_required
 @required_roles('User')
 def home():
     return render_template('dashboard.html', username=current_user.username)
+
 
 @auth_blueprint.route('/userprofile/<username>')
 @login_required
@@ -36,7 +37,8 @@ def user_profile(username):
     user = User.query.filter_by(username=username).first()
     return render_template('userprofile.html', user=user)
 
-@auth_blueprint.route('/userprofile/edit/<username>', methods = ['GET', 'POST'])
+
+@auth_blueprint.route('/userprofile/edit/<username>', methods=['GET', 'POST'])
 @login_required
 @required_roles('User')
 def edit(username):
@@ -66,6 +68,7 @@ def edit(username):
         form.description.data = current_user.description
         return render_template('edit_profile.html', user=user, form=form)
 
+
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -80,19 +83,21 @@ def login():
         else:
             error = 'Invalid username or password'
     return render_template('users/signin.html', form=form, error=error)
-  
+
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=1)
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'],
+                    role_id=1)
         db.session.add(user)
         db.session.commit()
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
     return render_template('users/registration.html', form=form)
+
 
 @auth_blueprint.route('/logout')
 @login_required
@@ -100,11 +105,3 @@ def logout():
     logout_user()
     flash('You were logged out.')
     return redirect(url_for('auth_blueprint.login'))
-  
-  class NotificationView(BaseView):
-    @expose('/')
-    def index(self):
-        return self.render('admin/notify.html')
-
-admin.add_view(ModelView(User, db.session))
-admin.add_view(NotificationView(name='Notification', endpoint='notify'))

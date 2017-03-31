@@ -180,15 +180,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>About Me</label>
-                                                <input type="text-area" class="form-control" value="{{current_user.description}}" readonly></input>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div class="clearfix"></div>
                                 </form>
                             </div>
@@ -204,7 +195,9 @@
                                     <img class="avatar border-gray" src="{{current_user.gravatar(size=256)}}" alt="..."/>
 
                                       <h4 class="title">{{current_user.first_name}} {{current_user.last_name}}<br/>
-                                         <small>"{{current_user.username}}"</small></h4>
+                                         <small>{{current_user.username}}</small><br><br>
+                                         <small>"{{current_user.description}}"</small>
+                                      </h4>
                                     </a>
                                 </div>
                                 <p class="description text-center"></p>

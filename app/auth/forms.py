@@ -1,11 +1,13 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, ValidationError, DateField
+from wtforms import StringField, PasswordField, ValidationError, DateField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from model import User
+
 
 class LoginForm(Form):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
+
 
 class RegisterForm(Form):
     username = StringField(
@@ -26,14 +28,15 @@ class RegisterForm(Form):
             DataRequired(), EqualTo('password', message='Passwords must match.')
         ]
     )
-    
+
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
-        
+
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
+
 
 class EditForm(Form):
     first_name = StringField('First Name', validators=[DataRequired()])
@@ -42,5 +45,5 @@ class EditForm(Form):
     city = StringField('City', validators=[DataRequired()])
     country = StringField('Country', validators=[DataRequired()])
     birth_date = DateField('Birth Date(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
-    contact_num = StringField('Contact Number', validators=[DataRequired()])
+    contact_num = IntegerField('Contact Number', validators=[DataRequired()])
     description = StringField('Description')

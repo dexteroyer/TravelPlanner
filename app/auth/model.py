@@ -5,6 +5,7 @@ from flask import request
 import hashlib
 from sqlalchemy.orm import backref
 
+
 class User(db.Model, UserMixin):
     __tablename__ = "users"
 
@@ -14,16 +15,16 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     roles = db.relationship('Role', back_populates='users')
-    #profile
+    # profile
     first_name = db.Column(db.String(128))
     last_name = db.Column(db.String(128))
     address = db.Column(db.String(150))
     city = db.Column(db.String(30))
     country = db.Column(db.String(30))
     birth_date = db.Column(db.Date)
-    contact_num = db.Column(db.Integer(10))
+    contact_num = db.Column(db.BIGINT)
     description = db.Column(db.String(300))
-    
+
     def __init__(self, username, email, password, role_id):
         self.username = username
         self.email = email
@@ -36,7 +37,7 @@ class User(db.Model, UserMixin):
     def getRole_name(self):
         role_name = Role.query.filter_by(id=self.getRole_id()).first()
         return role_name.name
-        
+
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
@@ -49,17 +50,18 @@ class User(db.Model, UserMixin):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
 
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     users = db.relationship('User', back_populates='roles')
-    
+
     def __init__(self, name):
         self.name = name
-        
+
     def __repr__(self):
-        return '<name {}>' .format(self.name)
+        return '<name {}>'.format(self.name)
 
     @staticmethod
     def insert_roles():
@@ -70,9 +72,9 @@ class Role(db.Model):
                 role = Role(name=r)
             db.session.add(role)
         db.session.commit()
-        
 
-        
+
+
 
 
 
