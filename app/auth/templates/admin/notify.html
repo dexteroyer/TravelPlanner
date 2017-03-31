@@ -1,0 +1,30 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-bell fa-fw"></i>Notifications Panel
+        </div>
+        <div class="panel-body">
+            <div class="list-group">
+                <a href="#" class="list-group-item">
+                    <i class="fa fa-comment fa-fw"></i>New Comment
+                    <span class="pull-right text-mutedd small"><en>4 minutes ago</en></span>
+                </a>
+                <a href="#" class="list-group-item">
+                    <i class="fa fa-comment fa-fw"></i>3 New Followers
+                    <span class="pull-right text-mutedd small"><en>12 minutes ago</en></span>
+                </a>
+                <a href="#" class="list-group-item">
+                    <i class="fa fa-comment fa-fw"></i>Message Sent
+                    <span class="pull-right text-mutedd small"><en>27 minutes ago</en></span>
+                </a>
+                <a href="#" class="list-group-item">
+                    <i class="fa fa-comment fa-fw"></i>New Task
+                    <span class="pull-right text-mutedd small"><en>43 minutes ago</en></span>
+                </a>
+            </div>
+            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+        </div>
+    </div>
+{% endblock body %}

@@ -50,13 +50,13 @@
 
             <ul class="nav">
                 <li>
-                    <a href="/TravelPlanner/app/auth/templates/dashboard.html">
+                    <a href="/home">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
                 <li>
-                    <a href="user.html">
+                    <a href="/userprofile/{{username}}">
                         <i class="pe-7s-user"></i>
                         <p>User Profile</p>
                     </a>
@@ -114,19 +114,18 @@
                     <div class="col-md-3">
                         <div class="card card-user">
                             <div class="image">
-                                <img src="" alt="..."/>
                             </div>
                             <div class="content">
                                 <div class="author">
                                      <a href="#">
-                                    <img class="avatar border-gray" src="" alt="..."/>
+                                    <img class="avatar border-gray" src="{{current_user.gravatar(size=256)}}" alt="..."/>
 
                                       <h4 class="title">{{username}}<br />
                                       </h4>
                                     </a>
                                 </div>
                                 <div style="text-align:center">
-                                    <a href="#">View profile</a>
+                                    <a href="/userprofile/{{username}}">View profile</a>
                                 </div>
                             </div>
                         </div>
@@ -143,8 +142,8 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                <a style="text-align:center" href="#">Complete Your Profile</a>
-                                                <p>Upload a photo and write a short bio about yourself.</p>
+                                                <a href="/userprofile/edit/{{username}}" style="text-align:center">Complete Your Profile</a>
+                                                <p>Complete your profile and write a short bio about yourself.</p>
                                                 </td>
                                             </tr>
                                             <tr>
