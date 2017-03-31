@@ -24,8 +24,14 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
+@auth_blueprint.route('/')
+def index():
+    return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
+ 
 @auth_blueprint.route('/home')
+#@required_roles('Admin')
+#def home():
+#    return '<h1>Click <a href="/admin/">here</a> to proceed to Admin Dashboard.</h1>'
 @login_required
 @required_roles('User')
 def home():
@@ -93,7 +99,7 @@ def register():
     Role.insert_roles()
     if form.validate_on_submit():
         user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'],
-                    role_id=1)
+                    role_id=3)
         db.session.add(user)
         db.session.commit()
         flash('Log In')
@@ -114,5 +120,11 @@ class NotificationView(BaseView):
     def index(self):
         return self.render('admin/notify.html')
 
-#admin.add_view(ModelView(User, db.session))
-#admin.add_view(NotificationView(name='Notification', endpoint='notify'))
+class Logout(BaseView):
+    @expose('/')
+    def index(self):
+        return redirect(url_for('auth_blueprint.login'))
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(NotificationView(name='Notification', endpoint='notify'))
+admin.add_view(Logout(name='Logout', endpoint='logout'))
