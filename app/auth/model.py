@@ -49,7 +49,6 @@ class User(db.Model, UserMixin):
  
     def is_anonymous(self):
         return False
-<<<<<<< HEAD
 
     def getRole_id(self):
         return self.role_id
@@ -58,9 +57,6 @@ class User(db.Model, UserMixin):
         role_name = Role.query.filter_by(id=self.getRole_id()).first()
         return role_name.name
 
-=======
-        
->>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
     def __repr__(self):
         return '<username {}>'.format(self.username)
 

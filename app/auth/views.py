@@ -15,14 +15,9 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='template
 # from flask_admin.contrib.sqla import ModelView
 # from flask_admin import BaseView, expose
 
-<<<<<<< HEAD
-=======
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='/static/',
                            static_url_path='/static/')
->>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
-
->>>>>>> 408d60e8a00fdc5f6158e9f87c12483d9a4ea52a
 # admin = Admin(app, template_mode='bootstrap3')
 
 login_manager = LoginManager()
@@ -108,48 +103,20 @@ def login():
         else:
             error = 'Invalid username or password'
     return render_template('users/signin.html', form=form, error=error)
-=======
-<<<<<<< HEAD
-    return render_template('users/signin.html', form=form, error=error)
-
-<<<<<<< HEAD
-=======
-=======
-    return render_template('signin.html', form=form, error=error)
->>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
->>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
->>>>>>> 408d60e8a00fdc5f6158e9f87c12483d9a4ea52a
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
-<<<<<<< HEAD
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'],
-                    role_id=3)
-
-=======
         user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3, 
                     first_name="", last_name="", address="", city="", country="", birth_date="", contact_num=0, description="")
->>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
         db.session.add(user)
         db.session.commit()
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
     return render_template('users/registration.html', form=form)
-=======
-<<<<<<< HEAD
-    return render_template('users/registration.html', form=form)
 
-<<<<<<< HEAD
-=======
-=======
-    return render_template('registration.html', form=form)
->>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
->>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
-
->>>>>>> 408d60e8a00fdc5f6158e9f87c12483d9a4ea52a
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
