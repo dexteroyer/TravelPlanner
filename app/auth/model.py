@@ -31,7 +31,6 @@ class User(db.Model, UserMixin):
         self.password = generate_password_hash(password)
         self.role_id = role_id
 
-<<<<<<< HEAD
     def isAuthenticated(self):
         return True
  
@@ -41,19 +40,9 @@ class User(db.Model, UserMixin):
     def is_anonymous(self):
         return False
         
-=======
-    def getRole_id(self):
-        return self.role_id
-
-    def getRole_name(self):
-        role_name = Role.query.filter_by(id=self.getRole_id()).first()
-        return role_name.name
-
->>>>>>> 2181d6979c912dc37f96bc29bbe82a5940342c1d
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
-<<<<<<< HEAD
 # class Role(db.Model):
 #     __tablename__ = "role"
 #     id = db.Column(db.Integer, primary_key=True)
@@ -61,7 +50,6 @@ class User(db.Model, UserMixin):
 #     default = db.Column(db.Boolean, default=False, index=True)
 #     permissions = db.Column(db.Integer)
 #     users = db.relationship('User', backref='role', lazy='dynamic')
-=======
     def gravatar(self, size=100, default='identicon', rating='g'):
         if request.is_secure:
             url = 'https://secure.gravatar.com/avatar'
@@ -70,7 +58,6 @@ class User(db.Model, UserMixin):
         hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
->>>>>>> b8dba0dbb2e2fe463f520ebae48dc72eff189bf6
 
 
 class Role(db.Model):
@@ -94,16 +81,6 @@ class Role(db.Model):
                 role = Role(name=r)
             db.session.add(role)
         db.session.commit()
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
->>>>>>> b8dba0dbb2e2fe463f520ebae48dc72eff189bf6
 
 
 

@@ -6,7 +6,7 @@ from model import User, Role
 from app import db, app
 from decorators import required_roles
 from flask_admin import Admin
-#from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 
 auth = Flask(__name__)
@@ -93,22 +93,14 @@ def login():
             error = 'Invalid username or password'
 
     return render_template('users/signin.html', form=form, error=error)
-<<<<<<< HEAD
-=======
 
->>>>>>> b8dba0dbb2e2fe463f520ebae48dc72eff189bf6
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
-<<<<<<< HEAD
         user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)
-=======
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'],
-                    role_id=3)
->>>>>>> 2181d6979c912dc37f96bc29bbe82a5940342c1d
         db.session.add(user)
         db.session.commit()
         flash('Log In')
@@ -117,10 +109,6 @@ def register():
     return render_template('users/registration.html', form=form)
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> b8dba0dbb2e2fe463f520ebae48dc72eff189bf6
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
