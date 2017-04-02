@@ -5,22 +5,15 @@ from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles
-<<<<<<< HEAD
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
-=======
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 # from flask_admin import BaseView, expose
-
-auth = Flask(__name__)
-auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='/static/',
-                           static_url_path='/static/')
->>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
 
 # admin = Admin(app, template_mode='bootstrap3')
 
@@ -52,7 +45,7 @@ def home():
 @required_roles('User')
 def user_profile(username):
     user = User.query.filter_by(username=username).first()
-    return render_template('userprofile.html', user=user)
+    return render_template('users/userprofile.html', user=user)
 
 
 @auth_blueprint.route('/userprofile/edit/<username>', methods=['GET', 'POST'])
@@ -73,7 +66,7 @@ def edit(username):
         db.session.add(current_user)
         db.session.commit()
         flash("Your changes have been saved.")
-        return render_template('userprofile.html', user=user)
+        return render_template('users/userprofile.html', user=user)
     else:
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
@@ -83,7 +76,7 @@ def edit(username):
         form.birth_date.data = current_user.birth_date
         form.contact_num.data = current_user.contact_num
         form.description.data = current_user.description
-        return render_template('edit_profile.html', user=user, form=form)
+        return render_template('users/edit_profile.html', user=user, form=form)
 
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
@@ -106,13 +99,8 @@ def login():
             return redirect(url_for('auth_blueprint.home', name=request.form['username']))
         else:
             error = 'Invalid username or password'
-
-<<<<<<< HEAD
     return render_template('users/signin.html', form=form, error=error)
 
-=======
-    return render_template('signin.html', form=form, error=error)
->>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -125,13 +113,7 @@ def register():
         db.session.commit()
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
-
-<<<<<<< HEAD
     return render_template('users/registration.html', form=form)
-
-=======
-    return render_template('registration.html', form=form)
->>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
 
 @auth_blueprint.route('/logout')
 @login_required
