@@ -5,15 +5,15 @@ from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles
-from flask_admin import Admin
-#from flask_admin.contrib.sqla import ModelView
-from flask_admin import BaseView, expose
+# from flask_admin import Admin
+# from flask_admin.contrib.sqla import ModelView
+# from flask_admin import BaseView, expose
 
 auth = Flask(__name__)
-auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='static',
-                           static_url_path='static')
+auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates/users', static_folder='/static/',
+                           static_url_path='/static/')
 
-admin = Admin(app, template_mode='bootstrap3')
+# admin = Admin(app, template_mode='bootstrap3')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -91,11 +91,7 @@ def login():
         else:
             error = 'Invalid username or password'
 
-    return render_template('users/signin.html', form=form, error=error)
-<<<<<<< HEAD
-=======
-
->>>>>>> b8dba0dbb2e2fe463f520ebae48dc72eff189bf6
+    return render_template('signin.html', form=form, error=error)
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -109,13 +105,8 @@ def register():
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
 
-    return render_template('users/registration.html', form=form)
+    return render_template('registration.html', form=form)
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> b8dba0dbb2e2fe463f520ebae48dc72eff189bf6
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
@@ -124,16 +115,16 @@ def logout():
     return redirect(url_for('auth_blueprint.login'))
 
 
-class NotificationView(BaseView):
-    @expose('/')
-    def index(self):
-        return self.render('admin/notify.html')
-
-class Logout(BaseView):
-    @expose('/')
-    def index(self):
-        return redirect(url_for('auth_blueprint.login'))
-
-admin.add_view(ModelView(User, db.session))
-admin.add_view(NotificationView(name='Notification', endpoint='notify'))
-admin.add_view(Logout(name='Logout', endpoint='logout'))
+# class NotificationView(BaseView):
+#     @expose('/')
+#     def index(self):
+#         return self.render('admin/notify.html')
+#
+# class Logout(BaseView):
+#     @expose('/')
+#     def index(self):
+#         return redirect(url_for('auth_blueprint.login'))
+#
+# admin.add_view(ModelView(User, db.session))
+# admin.add_view(NotificationView(name='Notification', endpoint='notify'))
+# admin.add_view(Logout(name='Logout', endpoint='logout'))
