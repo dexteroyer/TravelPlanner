@@ -5,6 +5,14 @@ from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles
+<<<<<<< HEAD
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from flask_admin import BaseView, expose
+
+auth = Flask(__name__)
+auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
+=======
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 # from flask_admin import BaseView, expose
@@ -12,6 +20,7 @@ from decorators import required_roles
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='/static/',
                            static_url_path='/static/')
+>>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
 
 # admin = Admin(app, template_mode='bootstrap3')
 
@@ -88,26 +97,55 @@ def login():
                 user.authenticated = True
                 login_user(user, remember=True)
                 flash('You are now logged in!')
+            if user.first_login == True:
+                user.first_login = False
+                db.session.add(user)
+                db.session.commit()
+                return redirect(url_for('auth_blueprint.edit', username=request.form['username']))
+
             return redirect(url_for('auth_blueprint.home', name=request.form['username']))
         else:
             error = 'Invalid username or password'
 
+<<<<<<< HEAD
     return render_template('users/signin.html', form=form, error=error)
+=======
+<<<<<<< HEAD
+    return render_template('users/signin.html', form=form, error=error)
+
+=======
+    return render_template('signin.html', form=form, error=error)
+>>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
+>>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
+<<<<<<< HEAD
         user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'],
                     role_id=3)
 
+=======
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3, 
+                    first_name="", last_name="", address="", city="", country="", birth_date="", contact_num=0, description="")
+>>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
         db.session.add(user)
         db.session.commit()
         flash('Log In')
         return redirect(url_for('auth_blueprint.login'))
 
+<<<<<<< HEAD
     return render_template('users/registration.html', form=form)
+=======
+<<<<<<< HEAD
+    return render_template('users/registration.html', form=form)
+
+=======
+    return render_template('registration.html', form=form)
+>>>>>>> 43c78f1996a3925c6c3b016a7a0bb8e45053bc06
+>>>>>>> 45076e1e3820d36a20d0d2625f0b81f4a5d34b82
 
 @auth_blueprint.route('/logout')
 @login_required
