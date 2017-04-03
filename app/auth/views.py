@@ -14,10 +14,6 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='template
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 # from flask_admin import BaseView, expose
-
-auth = Flask(__name__)
-auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='/static/',
-                           static_url_path='/static/')
 # admin = Admin(app, template_mode='bootstrap3')
 
 login_manager = LoginManager()
@@ -31,7 +27,8 @@ def load_user(user_id):
 
 @auth_blueprint.route('/')
 def index():
-    return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
+    return render_template("index.html")
+    #return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
  
 @auth_blueprint.route('/home')
 #@required_roles('Admin')
