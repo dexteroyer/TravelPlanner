@@ -16,9 +16,11 @@ auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='template
 # from flask_admin import BaseView, expose
 # admin = Admin(app, template_mode='bootstrap3')
 
+admin = Admin(app, template_mode='bootstrap3')
+
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'auth_blueprint.login'
+login_manager.login_view = 'login'
 
 
 @login_manager.user_loader
@@ -30,15 +32,17 @@ def index():
     return render_template("index.html")
     #return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
  
+@auth_blueprint.route('/admin')
+@login_required
+@required_roles('Admin')
+def addash():
+    return 'welcome!'
+
 @auth_blueprint.route('/home')
-#@required_roles('Admin')
-#def home():
-#    return '<h1>Click <a href="/admin/">here</a> to proceed to Admin Dashboard.</h1>'
 @login_required
 @required_roles('User')
 def home():
     return render_template('users/dashboard.html', username=current_user.username)
-
 
 @auth_blueprint.route('/userprofile/<username>')
 @login_required
@@ -86,17 +90,23 @@ def login():
     if request.method == 'POST':
         if form.validate_on_submit():
             user = User.query.filter_by(username=request.form['username']).first()
-            if user is not None and check_password_hash(user.password, request.form['password']):
-                user.authenticated = True
-                login_user(user, remember=True)
-                flash('You are now logged in!')
-            if user.first_login == True:
-                user.first_login = False
-                db.session.add(user)
-                db.session.commit()
-                return redirect(url_for('auth_blueprint.edit', username=request.form['username']))
-
-            return redirect(url_for('auth_blueprint.home', name=request.form['username']))
+            if user.role_id == 3:
+                if user is not None and check_password_hash(user.password, request.form['password']):
+                    login_user(user)
+                    flash('You are now logged in!')
+                if user.first_login == True:
+                    user.first_login = False
+                    db.session.add(user)
+                    db.session.commit()
+                    return redirect(url_for('auth_blueprint.edit', username=request.form['username']))
+                return redirect(url_for('auth_blueprint.home', name=request.form['username']))
+            elif user.role_id == 1:
+                if user is not None and check_password_hash(user.password, request.form['password']):
+                    login_user(user)
+                    flash('You are now logged in!')
+                return redirect(url_for('auth_blueprint.addash', name=request.form['username']))
+            else:
+                return redirect(url_for('auth_blueprint.index'))
         else:
             error = 'Invalid username or password'
     return render_template('users/signin.html', form=form, error=error)
@@ -117,23 +127,20 @@ def register():
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
-    user = current_user
-    user.authenticated = False
     logout_user()
     flash('You were logged out.')
     return redirect(url_for('auth_blueprint.login'))
 
+class NotificationView(BaseView):
+    @expose('/')
+    def index(self):
+        return self.render('admin/notify.html')
 
-# class NotificationView(BaseView):
-#     @expose('/')
-#     def index(self):
-#         return self.render('admin/notify.html')
-#
-# class Logout(BaseView):
-#     @expose('/')
-#     def index(self):
-#         return redirect(url_for('auth_blueprint.login'))
-#
-# admin.add_view(ModelView(User, db.session))
-# admin.add_view(NotificationView(name='Notification', endpoint='notify'))
-# admin.add_view(Logout(name='Logout', endpoint='logout'))
+class Logout(BaseView):
+    @expose('/')
+    def index(self):
+        return redirect(url_for('auth_blueprint.login'))
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(NotificationView(name='Notification', endpoint='notify'))
+admin.add_view(Logout(name='Logout', endpoint='logout'))
