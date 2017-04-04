@@ -90,3 +90,20 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
+class Connection(db.Model):
+    """Connection between two users to establish a friendship and can see each other's info."""
+
+    __tablename__ = "connections"
+
+    connection_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_a_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_b_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(100), nullable=False)
+
+    # When both columns have a relationship with the same table, need to specify how
+    # to handle multiple join paths in the square brackets of foreign_keys per below
+    user_a = db.relationship("User", foreign_keys=[user_a_id], backref=db.backref("sent_connections"))
+    user_b = db.relationship("User", foreign_keys=[user_b_id], backref=db.backref("received_connections"))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
