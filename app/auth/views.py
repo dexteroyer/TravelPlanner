@@ -44,13 +44,20 @@ def addash():
 def home():
     return render_template('users/dashboard.html', username=current_user.username)
 
+
+@auth_blueprint.route('/new-trip')
+@login_required
+@required_roles('User')
+def new_trip():
+    return render_template('users/trip.html')
+
+
 @auth_blueprint.route('/userprofile/<username>')
 @login_required
 @required_roles('User')
 def user_profile(username):
     user = User.query.filter_by(username=username).first()
     return render_template('users/userprofile.html', user=user)
-
 
 @auth_blueprint.route('/userprofile/edit/<username>', methods=['GET', 'POST'])
 @login_required

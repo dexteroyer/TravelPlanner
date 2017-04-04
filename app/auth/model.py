@@ -5,7 +5,6 @@ from flask import request
 import hashlib
 from sqlalchemy.orm import backref
 
-
 class User(db.Model, UserMixin):
     __tablename__ = "users"
 
@@ -25,7 +24,6 @@ class User(db.Model, UserMixin):
     contact_num = db.Column(db.BIGINT)
     description = db.Column(db.String(300))
     first_login = db.Column(db.Boolean, default=True, nullable=False)
-
 
     def __init__(self, username, email, password, role_id, first_name, last_name, address, city, country, birth_date, contact_num, description):
         self.username = username
@@ -60,13 +58,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
-# class Role(db.Model):
-#     __tablename__ = "role"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(15), unique=True)
-#     default = db.Column(db.Boolean, default=False, index=True)
-#     permissions = db.Column(db.Integer)
-#     users = db.relationship('User', backref='role', lazy='dynamic')
     def gravatar(self, size=100, default='identicon', rating='g'):
         if request.is_secure:
             url = 'https://secure.gravatar.com/avatar'
