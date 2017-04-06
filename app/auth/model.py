@@ -1,12 +1,17 @@
-from app import db
+from app import db, app
 from flask_login import UserMixin
+from flask_whooshalchemy import whoosh_index
 from werkzeug.security import generate_password_hash
 from flask import request
 import hashlib
+from sqlalchemy_searchable import make_searchable
 from sqlalchemy.orm import backref
+
+make_searchable()
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
+    __searchable__ = ['username', 'first_name', 'last_name']
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), nullable=False)
@@ -106,4 +111,7 @@ class Connection(db.Model):
     user_b = db.relationship("User", foreign_keys=[user_b_id], backref=db.backref("received_connections"))
 
     def __repr__(self):
-        """Provide helpful representation when printed."""
+        return "<Connection connection_id=%s user_a_id=%s user_b_id=%s status=%s>" % (self.connection_id,
+                                                                                      self.user_a_id,
+                                                                                      self.user_b_id,
+                                                                                      self.status)

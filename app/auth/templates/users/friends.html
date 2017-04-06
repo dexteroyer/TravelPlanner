@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    {% import "bootstrap/wtf.html" as wtf %}
 	<meta charset="utf-8" />
 	<link rel="icon" type="image/png" href="#">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -153,7 +154,7 @@
             {% if friends %}
               {% for friend in friends %}
                 <div class="col-xs-6 col-sm-2" id="user-profile-pic-sm">
-                  <a href="users/{{ friend.user_id }}">
+                  <a href="users/{{ friend.id }}">
                     {% if friend.user_id == 1 %}
                       <img class="img-circle img-responsive" src="/static/img/profile-cartman.jpg">
                     {% elif friend.user_id == 4 %}
@@ -182,7 +183,7 @@
             {% if received_friend_requests %}
               {% for received_friend_request in received_friend_requests %}
                 <div class="col-xs-6 col-sm-2" id="user-profile-pic-sm">
-                  <a href="users/{{ received_friend_request.user_id }}">
+                  <a href="users/{{ received_friend_request.id }}">
                     {% if received_friend_request.user_id == 3 %}
                       <img class="img-circle img-responsive" src="/static/img/profile-stan-marsh.jpg">
                     {% else %}
@@ -210,7 +211,7 @@
             {% if sent_friend_requests %}
               {% for sent_friend_request in sent_friend_requests %}
                 <div class="col-xs-6 col-sm-2" id="user-profile-pic-sm">
-                  <a href="users/{{ sent_friend_request.user_id }}">
+                  <a href="users/{{ sent_friend_request.id }}">
                    <img class="img-circle img-responsive" src="/static/img/profile-avatar.png">
                     {{ sent_friend_request.first_name }} {{ sent_friend_request.last_name }}
                   </a>
@@ -235,10 +236,13 @@
                 Enter the name of your friend and see if they are a user of TravelPlanner! Connect with them to see what places they visited and their itineraries.
               </p>
               <!-- Search engine for users -->
-              <form class="navbar-form navbar-left" role="search" action="/friends/search">
+              <form class="navbar-form navbar-left" role="search" action="/friends/search/<query>">
+              {{form.hidden_tag()}}
                 <div class="input-group">
-                  <input class="form-control" id="searchbox" type="search" name="q" aria-label="Find Friend" placeholder="Find friend by name">
-                  <span class="input-group-btn">
+                    <div class="form-group">
+                        {{wtf.form_field(form.search)}}
+                    </div>
+                    <span class="input-group-btn">
                     <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                   </span>
                 </div>

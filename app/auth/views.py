@@ -1,14 +1,13 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
-from forms import LoginForm, RegisterForm, EditForm
+from forms import LoginForm, RegisterForm, EditForm, SearchForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles, get_friends, get_friend_requests
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
-from sqlalchemy_searchable import search
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
@@ -52,34 +51,54 @@ def home():
 def new_trip():
     return render_template('users/trip.html')
 
-@auth_blueprint.route('/friends')
+@auth_blueprint.route('/friends', methods=['GET','POST'])
 @login_required
 @required_roles('User')
-def friends():
-    return render_template('users/friends.html')
+def show_friends():
+    """Show friend requests and list of all friends"""
+    form = SearchForm()
+    # This returns User objects for current user's friend requests
+    received_friend_requests, sent_friend_requests = get_friend_requests("current_user.id")
 
-@auth_blueprint.route("/friends/search", methods=["GET"])
-@login_required
-@required_roles('User')
-def search_users():
-    """Search for a user and return results."""
+    # This returns a query for current user's friends (not User objects), but adding .all() to the end gets list of User objects
+    friends = get_friends("current_user.id").all()
 
-    # Returns users for current user's friend requests
-    received_friend_requests, sent_friend_requests = get_friend_requests(current_user.id)
-
-    # Returns query for current user's friends (not User objects) so add .all() to the end to get list of User objects
-    friends = get_friends(current_user.id).all()
-
-    user_input = request.args.get("q")
-
-    # Search user's query in users table of db and return all search results
-    search_results = search(db.session.query(User), user_input).all()
-
-    return render_template("browse_friends.html",
+    if request.method == 'POST' and form.validate_on_submit():
+        return redirect(url_for('auth_blueprint.show_friends'))
+    return render_template("users/friends.html",
                            received_friend_requests=received_friend_requests,
                            sent_friend_requests=sent_friend_requests,
                            friends=friends,
-                           search_results=search_results)
+                           query=form.search.data,
+                           form=form)
+
+
+@auth_blueprint.route("/friends/search/<query>", methods=["GET", "POST"])
+@login_required
+@required_roles('User')
+def search_users(query):
+    """Search for a user and return results."""
+    form = SearchForm()
+    # Returns users for current user's friend requests
+    received_friend_requests, sent_friend_requests = get_friend_requests("current_user.id")
+
+    # Returns query for current user's friends (not User objects) so add .all() to the end to get list of User objects
+    friends = get_friends("current_user.id").all()
+
+    #user_input = request.args.get("q")
+    # Search user's query in users table of db and return all search results
+    #search_results = search(db.session.query(User), user_input).all()
+    results = User.query.whoosh_search(query).all()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        return redirect(url_for('auth_blueprint.search_users'))
+    return render_template("users/browse_friends.html",
+                           received_friend_requests=received_friend_requests,
+                           sent_friend_requests=sent_friend_requests,
+                           friends=friends,
+                           query=query,
+                           form=form,
+                           results=results)
 
 @auth_blueprint.route('/userprofile/<username>')
 @login_required

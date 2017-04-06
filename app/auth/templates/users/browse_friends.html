@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    {% import "bootstrap/wtf.html" as wtf %}
 	<meta charset="utf-8" />
 	<link rel="icon" type="image/png" href="#">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -229,31 +230,29 @@
         <!-- Find Friends tab content -->
         <div role="tabpanel" class="tab-pane fade active in" id="find-friends" aria-labelledby="find-friends-tab">
           <h2>Find Friends</h2>
-          {% if search_results %}
-            <h5 class="search-results">({{ search_results | length }} results)</h5>
+          {% if results %}
+            <h5 class="search-results">({{ query | length }} results)</h5>
             <div class="row">
-              {% for user in search_results %}
+              {% for user in results %}
                 <div class="col-xs-12 col-md-6">
-                  <div class="list-group" id="restaurant-list"><!-- Need to fix this id across the other restaurant pages -->
-                    <a href="/users/{{ user.user_id }}" class="list-group-item">
+                    <a href="/users/{{ User.id }}" class="list-group-item">
                       <div class="media">
                         <div class="media-left">
-                          <img class="media-object" src="/static/img/profile-avatar.png" alt="Image for {{ user.first_name }}">
+                          <img class="media-object" alt="Image for {{ User.first_name }}">
                         </div><!-- /.media-left -->
                         <div class="media-body">
-                          <h3 class="media-heading">{{ user.first_name }} {{ user.last_name }}</h3>
+                          <h3 class="media-heading">{{ User.first_name }} {{ User.last_name }}</h3>
                           <p>
-                            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Location: {{ user.city.name }}
+                            <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> Location: {{ user.city }}, {{ user.country}}
                           </p>
                         </div><!-- /.media-body -->
                       </div><!-- /.media -->
                     </a>
-                  </div><!-- /.list-group -->
                 </div><!-- /.col -->
                 <div class="col-xs-12">
                   <p>Not who you're looking for? Please try searching again below.</p>
                   <!-- Search engine for users -->
-                  <form class="navbar-form navbar-left" role="search" action="/friends/search">
+                  <form class="navbar-form navbar-left" role="search" action="/friends/search/<query>">
                     <div class="input-group">
                       <input class="form-control" id="searchbox" type="search" name="q" aria-label="Find Friend" placeholder="Find friend by name">
                       <span class="input-group-btn">
@@ -267,10 +266,13 @@
               <h5 class="search-results">No results found.</h5>
               <p>Is your friend a user of TravelPlanner? Get them to sign up now, or please searching again below.</p>
               <!-- Search engine for users -->
-              <form class="navbar-form navbar-left" role="search" action="/friends/search">
+              <form class="navbar-form navbar-left" role="search" action="/friends/search/<query>">
+              {{form.hidden_tag()}}
                 <div class="input-group">
-                  <input class="form-control" id="searchbox" type="search" name="q" aria-label="Find Friend" placeholder="Find friend by name">
-                  <span class="input-group-btn">
+                    <div class="form-group">
+                        {{wtf.form_field(form.search)}}
+                    </div>
+                    <span class="input-group-btn">
                     <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                   </span>
                 </div>
