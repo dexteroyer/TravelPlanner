@@ -36,32 +36,32 @@ def is_friends_or_pending(user_a_id, user_b_id):
     return is_friends, is_pending
 
 
-def get_friend_requests(user_id):
+def get_friend_requests(id):
     """
     Get user's friend requests.
     Returns users that user received friend requests from.
     Returns users that user sent friend requests to.
     """
 
-    received_friend_requests = db.session.query(User).filter(Connection.user_b_id == user_id,
+    received_friend_requests = db.session.query(User).filter(Connection.user_b_id == id,
                                                              Connection.status == "Requested").join(Connection,
-                                                                                                    Connection.user_a_id == User.user_id).all()
+                                                                                                    Connection.user_a_id == User.id).all()
 
-    sent_friend_requests = db.session.query(User).filter(Connection.user_a_id == user_id,
+    sent_friend_requests = db.session.query(User).filter(Connection.user_a_id == id,
                                                          Connection.status == "Requested").join(Connection,
-                                                                                                Connection.user_b_id == User.user_id).all()
+                                                                                                Connection.user_b_id == User.id).all()
 
     return received_friend_requests, sent_friend_requests
 
 
-def get_friends(user_id):
+def get_friends(id):
     """
     Return a query for user's friends
     Note: This does not return User objects, just the query
     """
 
-    friends = db.session.query(User).filter(Connection.user_a_id == user_id,
+    friends = db.session.query(User).filter(Connection.user_a_id == id,
                                             Connection.status == "Accepted").join(Connection,
-                                                                                  Connection.user_b_id == User.user_id)
+                                                                                  Connection.user_b_id == User.id)
 
     return friends

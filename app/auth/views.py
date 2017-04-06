@@ -4,10 +4,11 @@ from werkzeug.security import check_password_hash
 from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role
 from app import db, app
-from decorators import required_roles
+from decorators import required_roles, get_friends, get_friend_requests
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
+from sqlalchemy_searchable import search
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
@@ -51,6 +52,34 @@ def home():
 def new_trip():
     return render_template('users/trip.html')
 
+@auth_blueprint.route('/friends')
+@login_required
+@required_roles('User')
+def friends():
+    return render_template('users/friends.html')
+
+@auth_blueprint.route("/friends/search", methods=["GET"])
+@login_required
+@required_roles('User')
+def search_users():
+    """Search for a user and return results."""
+
+    # Returns users for current user's friend requests
+    received_friend_requests, sent_friend_requests = get_friend_requests(current_user.id)
+
+    # Returns query for current user's friends (not User objects) so add .all() to the end to get list of User objects
+    friends = get_friends(current_user.id).all()
+
+    user_input = request.args.get("q")
+
+    # Search user's query in users table of db and return all search results
+    search_results = search(db.session.query(User), user_input).all()
+
+    return render_template("browse_friends.html",
+                           received_friend_requests=received_friend_requests,
+                           sent_friend_requests=sent_friend_requests,
+                           friends=friends,
+                           search_results=search_results)
 
 @auth_blueprint.route('/userprofile/<username>')
 @login_required
