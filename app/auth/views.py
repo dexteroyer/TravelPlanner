@@ -3,8 +3,10 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import check_password_hash
 from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role, Anonymous
+from forms import LoginForm, RegisterForm, EditForm, SearchForm
+from model import User, Role
 from app import db, app
-from decorators import required_roles
+from decorators import required_roles, get_friends, get_friend_requests
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -73,13 +75,68 @@ def addash():
 def home():
     return render_template('users/dashboard.html', username=current_user.username)
 
+
+@auth_blueprint.route('/new-trip')
+@login_required
+@required_roles('User')
+def new_trip():
+    return render_template('users/trip.html')
+
+@auth_blueprint.route('/friends', methods=['GET','POST'])
+@login_required
+@required_roles('User')
+def show_friends():
+    """Show friend requests and list of all friends"""
+    form = SearchForm()
+    # This returns User objects for current user's friend requests
+    received_friend_requests, sent_friend_requests = get_friend_requests("current_user.id")
+
+    # This returns a query for current user's friends (not User objects), but adding .all() to the end gets list of User objects
+    friends = get_friends("current_user.id").all()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        return redirect(url_for('auth_blueprint.show_friends'))
+    return render_template("users/friends.html",
+                           received_friend_requests=received_friend_requests,
+                           sent_friend_requests=sent_friend_requests,
+                           friends=friends,
+                           query=form.search.data,
+                           form=form)
+
+
+@auth_blueprint.route("/friends/search/<query>", methods=["GET", "POST"])
+@login_required
+@required_roles('User')
+def search_users(query):
+    """Search for a user and return results."""
+    form = SearchForm()
+    # Returns users for current user's friend requests
+    received_friend_requests, sent_friend_requests = get_friend_requests("current_user.id")
+
+    # Returns query for current user's friends (not User objects) so add .all() to the end to get list of User objects
+    friends = get_friends("current_user.id").all()
+
+    #user_input = request.args.get("q")
+    # Search user's query in users table of db and return all search results
+    #search_results = search(db.session.query(User), user_input).all()
+    results = User.query.whoosh_search(query).all()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        return redirect(url_for('auth_blueprint.search_users'))
+    return render_template("users/browse_friends.html",
+                           received_friend_requests=received_friend_requests,
+                           sent_friend_requests=sent_friend_requests,
+                           friends=friends,
+                           query=query,
+                           form=form,
+                           results=results)
+
 @auth_blueprint.route('/userprofile/<username>')
 @login_required
 @required_roles('User')
 def user_profile(username):
     user = User.query.filter_by(username=username).first()
     return render_template('users/userprofile.html', user=user)
-
 
 @auth_blueprint.route('/userprofile/edit/<username>', methods=['GET', 'POST'])
 @login_required

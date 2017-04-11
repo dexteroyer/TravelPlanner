@@ -1,13 +1,19 @@
 from app import db
 from flask_login import UserMixin, AnonymousUserMixin
+from app import db, app
+from flask_login import UserMixin
+from flask_whooshalchemy import whoosh_index
 from werkzeug.security import generate_password_hash
 from flask import request
 import hashlib
+from sqlalchemy_searchable import make_searchable
 from sqlalchemy.orm import backref
 
+make_searchable()
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
+    __searchable__ = ['username', 'first_name', 'last_name']
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), nullable=False)
@@ -27,6 +33,7 @@ class User(db.Model, UserMixin):
     
     #User Information modification on first login
     first_login = db.Column(db.Boolean, default=True, nullable=False)
+
 
     def __init__(self, username, email, password, role_id):
         self.username = username
@@ -61,13 +68,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
-# class Role(db.Model):
-#     __tablename__ = "role"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(15), unique=True)
-#     default = db.Column(db.Boolean, default=False, index=True)
-#     permissions = db.Column(db.Integer)
-#     users = db.relationship('User', backref='role', lazy='dynamic')
     def gravatar(self, size=100, default='identicon', rating='g'):
         if request.is_secure:
             url = 'https://secure.gravatar.com/avatar'
@@ -112,3 +112,23 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
+class Connection(db.Model):
+    """Connection between two users to establish a friendship and can see each other's info."""
+
+    __tablename__ = "connections"
+
+    connection_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_a_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_b_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    status = db.Column(db.String(100), nullable=False)
+
+    # When both columns have a relationship with the same table, need to specify how
+    # to handle multiple join paths in the square brackets of foreign_keys per below
+    user_a = db.relationship("User", foreign_keys=[user_a_id], backref=db.backref("sent_connections"))
+    user_b = db.relationship("User", foreign_keys=[user_b_id], backref=db.backref("received_connections"))
+
+    def __repr__(self):
+        return "<Connection connection_id=%s user_a_id=%s user_b_id=%s status=%s>" % (self.connection_id,
+                                                                                      self.user_a_id,
+                                                                                      self.user_b_id,
+                                                                                      self.status)
