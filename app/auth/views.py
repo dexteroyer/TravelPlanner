@@ -1,13 +1,14 @@
-from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, jsonify
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from werkzeug.security import check_password_hash
 from forms import LoginForm, RegisterForm, EditForm
-from model import User, Role
+from model import User, Role, Anonymous
 from app import db, app
 from decorators import required_roles
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
+from sqlalchemy import func, desc
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
@@ -20,18 +21,46 @@ admin = Admin(app, template_mode='bootstrap3')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'auth_blueprint.login'
+login_manager.anonymous_user = Anonymous
 
+POSTS_PER_PAGE = 8
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@auth_blueprint.route('/')
-def index():
-    return render_template("index.html")
+@auth_blueprint.route('/', methods=['GET', 'POST'])
+@auth_blueprint.route('/index', methods=['GET', 'POST'])
+@auth_blueprint.route('/index/<int:page>', methods=['GET', 'POST'])
+def index(page=1):
+    label, links =[], []
+    if current_user.isAuthenticated():
+        label = ["Account", "Log Out"]
+        links = ["/home", "/logout"]
+        p = True
+    else:
+        label = ["Log In", "Sign Up"]
+        links = ["/login", "/register"]
+        p=False
+
+    users = User.query.order_by(desc(User.id)).paginate(page, POSTS_PER_PAGE, False)
+    return render_template('index_1.html', title='Home', users=users, label=label, links=links, dash_isAuthenticated=p)
     #return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
  
+@app.route('/SearchResult')
+def result():
+    search_string = request.args.get('searchbar')
+    resultt = db.session.query(User).filter(func.concat(User.username, ' ', User.email, ' ', User.description).like('%'+search_string+'%')).all()
+    #resultt, = resultt
+    usernameL, emailL, descriptionL = [], [], []
+    for i in range(0, len(resultt)):
+        usernameL.append(resultt[i].username)
+        emailL.append(resultt[i].email)
+        descriptionL.append(resultt[i].description)
+
+    return jsonify(result1=usernameL, result2=emailL, result3=descriptionL, size=len(usernameL))
+
 @auth_blueprint.route('/admin')
 @login_required
 @required_roles('Admin')
@@ -116,8 +145,7 @@ def register():
     form = RegisterForm()
     Role.insert_roles()
     if form.validate_on_submit():
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3, 
-                    first_name="", last_name="", address="", city="", country="", birth_date="", contact_num=0, description="")
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)          
         db.session.add(user)
         db.session.commit()
         flash('Log In')

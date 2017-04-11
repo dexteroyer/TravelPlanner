@@ -1,5 +1,5 @@
 from app import db
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash
 from flask import request
 import hashlib
@@ -24,22 +24,23 @@ class User(db.Model, UserMixin):
     birth_date = db.Column(db.Date)
     contact_num = db.Column(db.BIGINT)
     description = db.Column(db.String(300))
+    
+    #User Information modification on first login
     first_login = db.Column(db.Boolean, default=True, nullable=False)
 
-
-    def __init__(self, username, email, password, role_id, first_name, last_name, address, city, country, birth_date, contact_num, description):
+    def __init__(self, username, email, password, role_id):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
         self.role_id = role_id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.address = address
-        self.city = city
-        self.country = country
-        self.birth_date = birth_date
-        self.contact_num = contact_num
-        self.description = description
+        self.first_name = ""
+        self.last_name = ""
+        self.address = ""
+        self.city = ""
+        self.country = ""
+        self.birth_date = ""
+        self.contact_num = 0
+        self.description = ""
 
     def isAuthenticated(self):
         return True
@@ -76,6 +77,18 @@ class User(db.Model, UserMixin):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
 
+class Anonymous(AnonymousUserMixin):
+    def __init__(self):
+        self.username = 'Guest'
+
+    def isAuthenticated(self):
+        return False
+ 
+    def is_active(self):
+        return False
+ 
+    def is_anonymous(self):
+        return True
 
 class Role(db.Model):
     __tablename__ = 'roles'

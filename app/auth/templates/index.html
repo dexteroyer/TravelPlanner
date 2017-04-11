@@ -13,9 +13,19 @@
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.css') }}">
+
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('.static', filename='css/scrolling-nav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/pagination.css') }}">
+
+
+    <!-- Bootcards CSS for desktop: -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootcards-desktop.min.css.css') }}">
+
+
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/jquery.min.js') }}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -24,8 +34,30 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-</head>
+    <script type="text/javascript">
+        $(function() {
+          $('a#submit_res').bind('click', function() {
+            $.getJSON('/SearchResult', {
+              searchbar: $('input[name="searchbar"]').val()
+            }, function(data) {
+              //$("#result_1").text(data.result1+"-"+data.result2+"-"+data.result3); 
+              $("#search_res").show();
+              $("#trip_num").text(data.result1);
+              $("#trip_details").text(data.result2);
+              $("#trip_em").text(data.result3);
+            });
+            return false;
+          });
+        });
 
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#search_res").hide();
+        });
+    </script>
+
+</head>
 <!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
@@ -64,7 +96,7 @@
                 </ul>
                 <div align="right" style="text-align:right">
                         <a href="/register">Sign Up  |</a>
-                        <a href="/logout">Log In</a>
+                        <a href="/login">Log In</a>
                 </div>
             </div>
             <!-- /.navbar-collapse -->
@@ -73,31 +105,68 @@
     </nav>
 
     <!-- Intro Section -->
-    <section id="intro" class="intro-section">
+    <section id="intro" class="intro-section" style="background-image: url('https://wallpaperscraft.com/image/couple_walk_top_travel_64555_1920x1080.jpg'); background-repeat: no-repeat;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Scrolling Nav</h1>
-                    <p><strong>Usage Instructions:</strong> Make sure to include the <code>scrolling-nav.js</code>, <code>jquery.easing.min.js</code>, and <code>scrolling-nav.css</code> files. To make a link smooth scroll to another section on the page, give the link the <code>.page-scroll</code> class and set the link target to a corresponding ID on the page.</p>
-                    <a class="btn btn-default page-scroll" href="#about">Click Me to Scroll Down!</a>
+                    <h1>Welcome Traveler</h1>
+                    <form style="display:inline-block;" id="searchForm" onSubmit="return false;">
+                        <input type="text" class="form-control" id="searchbar" name="searchbar" style="width:700px; display:inline-block;">
+                        <a class="btn btn-success btn-fill" id="submit_res" href="javascript:void();">Search Trip</a>
+                        <!-- <a class="btn btn-primary btn-fill page-scroll" href="#about">Start Here!</a> -->
+                    </form><br><br>
+
+                    <div class="container" id="search_res">
+                        <span id="result_1"></span>
+                        <div class="panel panel-default bootcards-media" style="width:80%; margin:0 auto;""> 
+                          <div class="panel-heading" id="trip_num" align="left">....</div>
+                          <div class="panel-body" id="trip_details"> ... </div> 
+                          <img src="http://www.linkofphoto.com/path"/> 
+                          <div class="panel-footer" id="trip_em" align="left">...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about-section">
+    <section id="about" class="about-section" style="height:100vh">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <h1>Featured Trips</h1>
                 </div>
+                
+                <table cellspacing="4" style="border-spacing: 0;">
+                <tr>
+                {% for user in users.items %}
+                    <td style="padding: 2px;">  
+                    <div class="container" style="display:inline;">
+                        <div class="panel panel-default bootcards-media" style="width:100%;"> 
+                          <div class="panel-heading" align="left" style="width: 100%;">{{ user.username }}</div>
+                          <div class="panel-body" style="width: 100%;">{{ user.desciption }}</div> 
+                          <img src="http://www.geekyedge.com/wp-content/uploads/2017/01/Online-Casino-Game-200x110.jpg"/>
+                          <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">{{ user.email }}
+                          <a href="#" class="btn btn-primary">View Trip</a>
+                          </div>
+                        </div>
+                    </td>
+                    </div>
+                {% endfor %}
+                </tr>
+                </table>
+                <br>
+                {% if users.has_prev %}<a class="btn btn-primary btn-fill" href="{{ url_for('auth_blueprint.index', page=users.prev_num) }}">Newer entries</a>{% else %}&lt;&lt; Newer entries{% endif %} | 
+                {% if users.has_next %}<a  class="btn btn-primary btn-fill" href="{{ url_for('auth_blueprint.index', page=users.next_num) }}">Older entries</a>{% else %}Older entries &gt;&gt;{% endif %}
             </div>
         </div>
+        <br>
+        <br>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="services-section">
+    <section id="services" class="services-section" style="height:100vh">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -108,7 +177,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
+    <section id="contact" class="contact-section" style="height:100vh">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -128,6 +197,9 @@
 
     <script type="text/javascript" src="{{ url_for('.static', filename='js/scrolling-nav.js') }}"></script>
 
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/bootcards.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/maintainscroll.jquery.min.js') }}"></script>
 </body>
 
 </html>
