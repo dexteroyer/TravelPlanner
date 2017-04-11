@@ -35,7 +35,7 @@ class User(db.Model, UserMixin):
     first_login = db.Column(db.Boolean, default=True, nullable=False)
 
 
-    def __init__(self, username, email, password, role_id):
+    def __init__(self, username='', email='', password='', role_id=''):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password)
