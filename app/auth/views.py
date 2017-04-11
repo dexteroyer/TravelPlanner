@@ -14,10 +14,6 @@ from sqlalchemy import func, desc
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
-# from flask_admin import Admin
-# from flask_admin.contrib.sqla import ModelView
-# from flask_admin import BaseView, expose
-# admin = Admin(app, template_mode='bootstrap3')
 
 admin = Admin(app, template_mode='bootstrap3')
 
@@ -227,5 +223,6 @@ class Logout(BaseView):
         return redirect(url_for('auth_blueprint.login'))
 
 admin.add_view(ModelView(User, db.session))
+#admin.add_view(ModelView(Trips, db.session))
 admin.add_view(NotificationView(name='Notification', endpoint='notify'))
 admin.add_view(Logout(name='Logout', endpoint='logout'))
