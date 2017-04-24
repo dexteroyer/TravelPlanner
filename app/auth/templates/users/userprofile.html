@@ -43,7 +43,7 @@
 
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a class="simple-text">
+                <a class="simple-text" href="/">
                     TravelPlanner
                 </a>
             </div>
@@ -62,7 +62,11 @@
                     </a>
                 </li>
                 <li>
+<<<<<<< HEAD
                     <a href="/trips">
+=======
+                    <a href="/new-trip">
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
                         <i class="pe-7s-note2"></i>
                         <p>Trips</p>
                     </a>
@@ -179,7 +183,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="clearfix"></div>
                                 </form>
                             </div>
@@ -217,13 +220,13 @@
 </body>
 
     <!--   Core JS Files   -->
-    <link rel="stylesheet" type="text/javascript" href="{{ url_for('.static', filename='js/jquery-1.10.2.js') }}">
-    <link rel="stylesheet" type="text/javascript" href="{{ url_for('.static', filename='js/bootstrap.min.js') }}">
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/jquery-1.10.2.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/bootstrap.min.js') }}"></script>
 
-	<!--  Checkbox, Radio & Switch Plugins -->
-    <link rel="stylesheet" href="{{ url_for('.static', filename='js/bootstrap-checkbox-radio-switch.js') }}">
+    <!--  Checkbox, Radio & Switch Plugins -->
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/bootstrap-checkbox-radio-switch.js') }}"></script>
 
     <!--  Google Maps Plugin    -->
-    <link rel="stylesheet" type="text/javascript" href="https://maps.googleapis.com/maps/api/js?sensor=false">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
 </html>

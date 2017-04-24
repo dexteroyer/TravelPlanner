@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, ValidationError, DateField, IntegerField
+from wtforms import StringField, PasswordField, ValidationError, DateField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from model import User
 
@@ -49,3 +49,8 @@ class EditForm(Form):
     description = StringField('Description')
 
 
+<<<<<<< HEAD
+=======
+class SearchForm(Form):
+    search = StringField('',validators=[DataRequired()])
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1

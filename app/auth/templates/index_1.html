@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="#">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>TravelPlanner</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <!-- Bootstrap core CSS     -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Animation library for notifications   -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/animate.min.css') }}">
+
+    <!--  Light Bootstrap Table core CSS    -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/light-bootstrap-dashboard.css') }}">
+
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css//demo.css') }}">
+
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type='text/css' href="http://fonts.googleapis.com/css?family=Roboto:400,700,300">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/pe-icon-7-stroke.css') }}">
+
+     <link rel="stylesheet" href="{{ url_for('.static', filename='css/pagination.css') }}">
+
+     <script type="text/javascript" src="{{ url_for('.static', filename='js/jquery.min.js') }}"></script>
+
+
+
+</head>
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+<div class="wrapper">
+    <div class="sidebar" data-color="purple">
+
+    <!--
+
+        Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
+        Tip 2: you can also add an image using data-image tag
+
+    -->
+
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <a class="simple-text" href="/">
+                    TravelPlanner
+                </a>
+            </div>
+
+            <ul class="nav">
+                <li>
+                    <a class="page-scroll" href="#intro">
+                        <i class="pe-7s-home"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#feat_trips">
+                        <i class="pe-7s-display2"></i>
+                        <p>Featured Trips</p>
+                    </a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#about">
+                        <i class="pe-7s-help2"></i>
+                        <p>About</p>
+                    </a>
+                </li>
+                {% if dash_isAuthenticated==True %}
+                <li>
+                    <a href="/home">
+                        <i class="pe-7s-graph"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default navbar-fixed" id="intro">
+            <div class="container-fluid" >
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Home</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                                <p class="hidden-lg hidden-md">Dashboard</p>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                           <a href="{{ links[0] }}" disabled>
+                               <p>{{ label[0] }}</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" style="pointer-events: none; cursor: default;">
+                               <p>|</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ links[1] }}">
+                                <p>{{ label[1] }}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="content" style="overflow-x: hidden;">
+
+             <section id="intro" class="intro-section" style="border:3px; height:100vh; width:90vh;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Welcome Traveler</h1>
+                            <form style="display:inline-block; flex-grow: 1;" id="searchForm" onSubmit="return false;">
+                                <input type="text" class="form-control" id="searchbar" name="searchbar" style="width:700px; height:auto; display:inline-block;">
+                                <a class="btn btn-success btn-fill" id="submit_res" href="javascript:void();">Search Trip</a>
+
+                                <!-- <a class="btn btn-primary btn-fill page-scroll" href="#about">Start Here!</a> -->
+                            </form><br><br>
+
+                            <div class="container" id="search_res" style="overflow-y: scroll; height:400px; width:90%; float:left;">
+                                <span id="result_1"></span>
+
+                            </div>
+                    </div>
+                </div>
+                </div>
+
+            </section>
+
+
+            <section id="feat_trips" class="about-section" style="height:100vh;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>Featured Trips</h3>
+                        </div>
+                        {% if users.has_prev %}<a class="btn btn-primary btn-fill" href="{{ url_for('auth_blueprint.index', page=users.prev_num) }}">Newer entries</a>{% else %}&lt;&lt; Newer entries{% endif %} | 
+                        {% if users.has_next %}<a  class="btn btn-primary btn-fill" href="{{ url_for('auth_blueprint.index', page=users.next_num) }}">Older entries</a>{% else %}Older entries &gt;&gt;{% endif %}
+                        <div class="content" style="width:100%;">
+                        <table cellspacing="4" style="width:80%; height:80%; border-collapse: collapse;">
+                        <tr style="border-spacing: 0;">
+                        {% for user in users.items %}
+                            <td>  
+                            <div class="container" style="display:inline; width:70%;">
+                                <div class="panel panel-default bootcards-media" style="width:100%;"> 
+                                  <div class="panel-heading" align="left" style="width: 100%;">{{ user.username }}</div>
+                                  <div class="panel-body" style="width: 100%;">{{ user.desciption }}</div> 
+                                  <img src="http://www.geekyedge.com/wp-content/uploads/2017/01/Online-Casino-Game-200x110.jpg"/>
+                                  <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">{{ user.email }}
+                                  <a href="#" class="btn btn-primary">View Trip</a>
+                                  </div>
+                                </div>
+                             </div>
+                            </td>
+            
+                        {% if loop.index%4==0 %}
+                            </tr>
+                            <tr>
+                            {% endif %}
+                        {% endfor %}
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <br><br>
+            <section id="about" class="contact-section" style="height:100vh; width:90vh;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>About</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+  
+        </div>
+    </div>
+</div>
+    
+
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/bootstrap.min.js') }}"></script>
+
+     <script type="text/javascript" src="{{ url_for('.static', filename='js/help.js') }}"></script>
+    <!--  Checkbox, Radio & Switch Plugins -->
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/bootstrap-checkbox-radio-switch.js') }}"></script>
+
+    <!--  Google Maps Plugin    -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/bootcards.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/maintainscroll.jquery.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/maintainscroll.jquery.min.js') }}"></script>
+
+</body>
+    
+
+</html>
