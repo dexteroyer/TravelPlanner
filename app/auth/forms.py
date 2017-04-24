@@ -47,3 +47,5 @@ class EditForm(Form):
     birth_date = DateField('Birth Date(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
     contact_num = IntegerField('Contact Number', validators=[DataRequired()])
     description = StringField('Description')
+
+

@@ -19,6 +19,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/travelp
 from auth.views import auth_blueprint
 app.register_blueprint(auth_blueprint)
 
+from trips.views import trip_blueprint
+app.register_blueprint(trip_blueprint)
+
+
 db.create_all()
 
 
