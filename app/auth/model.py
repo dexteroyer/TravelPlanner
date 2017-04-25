@@ -45,7 +45,7 @@ class User(db.Model, UserMixin):
         self.address = ""
         self.city = ""
         self.country = ""
-        self.birth_date = ""
+        self.birth_date = None
         self.contact_num = 0
         self.description = ""
 
