@@ -5,8 +5,17 @@ from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role, Anonymous
 from forms import LoginForm, RegisterForm, EditForm, SearchForm
 from model import User, Role
+<<<<<<< HEAD
 from app import db, app, mail
 from decorators import required_roles, get_friends, get_friend_requests, send_email
+=======
+from app import db, app
+<<<<<<< HEAD
+from decorators import required_roles
+=======
+from decorators import required_roles, get_friends, get_friend_requests
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
+>>>>>>> 1cf7be276548e50cd65ed9b6451f3c6a28c6a688
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -14,12 +23,16 @@ from sqlalchemy import func, desc
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
+<<<<<<< HEAD
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 # from flask_admin import BaseView, expose
+
 # admin = Admin(app, template_mode='bootstrap3')
+=======
 
 admin = Admin(app, template_mode='bootstrap3')
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -188,7 +201,12 @@ def user_profile(username):
     user = User.query.filter_by(username=username).first()
     return render_template('users/userprofile.html', user=user)
 
+<<<<<<< HEAD
+
+@auth_blueprint.route('/userprofile/<username>/edit', methods=['GET', 'POST'])
+=======
 @auth_blueprint.route('/userprofile/edit/<username>', methods=['GET', 'POST'])
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
 @login_required
 @required_roles('User')
 def edit(username):
@@ -247,13 +265,28 @@ def login():
                 else:
                     return redirect(url_for('auth_blueprint.index'))
             else:
+<<<<<<< HEAD
                 error = 'Invalid username or password'
         return render_template('users/signin.html', form=form, error=error)
+=======
+                return redirect(url_for('auth_blueprint.index'))
+        else:
+            error = 'Invalid username or password'
+<<<<<<< HEAD
 
+    return render_template('users/signin.html', form=form, error=error)
+>>>>>>> 1cf7be276548e50cd65ed9b6451f3c6a28c6a688
+
+
+=======
+    return render_template('users/signin.html', form=form, error=error)
+
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     Role.insert_roles()
+<<<<<<< HEAD
     if current_user.is_active():
         return redirect(url_for('auth_blueprint.index'))
     else:
@@ -264,6 +297,26 @@ def register():
             flash('Log In')
             return redirect(url_for('auth_blueprint.login'))
         return render_template('users/registration.html', form=form)
+=======
+    if form.validate_on_submit():
+<<<<<<< HEAD
+
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3, 
+                    first_name="", last_name="", address="", city="", country="", birth_date="", contact_num=0, description="")
+
+=======
+        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)          
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
+        db.session.add(user)
+        db.session.commit()
+        flash('Log In')
+        return redirect(url_for('auth_blueprint.login'))
+<<<<<<< HEAD
+
+=======
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
+    return render_template('users/registration.html', form=form)
+>>>>>>> 1cf7be276548e50cd65ed9b6451f3c6a28c6a688
 
 @auth_blueprint.route('/logout')
 @login_required
@@ -283,5 +336,6 @@ class Logout(BaseView):
         return redirect(url_for('auth_blueprint.index'))
 
 admin.add_view(ModelView(User, db.session))
+#admin.add_view(ModelView(Trips, db.session))
 admin.add_view(NotificationView(name='Notification', endpoint='notify'))
 admin.add_view(Logout(name='Logout', endpoint='logout'))
