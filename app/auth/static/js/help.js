@@ -1,5 +1,5 @@
-$(function() {
-          $('a#submit_res').bind('click', function() {
+//Search Bar
+/*          $('a#submit_res').bind('click', function() {
             $.getJSON('/SearchResult', {
               searchbar: $('input[name="searchbar"]').val()
             }, function(data) {
@@ -13,7 +13,7 @@ $(function() {
                     '<div class="panel-body" id="trip_details">'+ data.result3[i]+'</div>' +
                     '<img src="http://www.linkofphoto.com/path"/>'+
                     '<div class="panel-footer" id="trip_em" align="left" style="display:inline-block;">'+data.result2[i]+'</div>'+
-                    '<a href="#" class="btn btn-primary">View Trip</a>'+
+                    '<a href="/view/'+data.result1[i]+'" class="btn btn-primary">View Trip</a>'+
                 '</div>';  
               }
               $("#search_res").append(stringRes);
@@ -25,4 +25,148 @@ $(function() {
 
 $(document).ready(function() {
             $("#search_res").hide();
+        });*/
+function return_Result(){
+    var res = $('input[name="searchbar"]').val();
+    window.location.replace("/trip-plans/"+res);
+}
+
+
+//Newest Trips and Most popular
+var counter = 1;
+var det = true;
+
+
+function state(username, email, description){
+      return   '<div class="col-sm-3 text-center">'+
+                            '<div class="container" style="display:inline; width:100%;">'+
+                                '<div class="panel panel-default bootcards-media" style="width:100%;">'+ 
+                                    '<div class="panel-heading" align="left" style="width: 100%;">'+username+'</div>'+
+                                    '<div class="panel-body" style="width: 100%; height: 100%;" align="center">'+
+                                    '<img style="height: 100%; width: 100%; object-fit:contain;" src="http://static2.businessinsider.com/image/58d14474d349f92a008b5bee/the-25-most-popular-travel-destinations-in-the-us.jpg"/></div>'+
+                                    '<div class="panel-footer" align="left" style="display: inline-block; width: 100%;">'+email+
+                                    '<a href="/view/'+username+'" target="_blank" class="btn btn-primary">View Trip</a>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'+ 
+                        '</div>';
+
+}
+    function res(){
+      if(det==true)
+           counter++;
+      if(counter==1)
+          counter++;
+        $.getJSON('/paginate/1', {
+              page: counter
+            }, function(data) {
+            $("#res").html("");
+              var stringRes = "";
+              if(data.determiner==false)
+                det = false;
+              else if(data.determiner==true)
+                det = true;
+
+            for(i=0; i<data.size; i++){
+                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+            }
+            $("#res").append(stringRes);
+            console.log(counter);
         });
+        return false;
+    }
+
+    function res_1(){
+        if(counter>1)
+            counter--;
+        $.getJSON('/paginate/1', {
+              page: counter
+            }, function(data) {
+            $("#res").html("");
+              var stringRes = "";
+
+            if(data.determiner==false)
+                det = false;
+              else if(data.determiner==true)
+                det = true;
+
+            for(i=0; i<data.size; i++){
+                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+            }
+            $("#res").append(stringRes);
+            console.log(counter);
+            
+        });
+        return false;
+    }
+
+
+    var counter_1 = 1;
+var det_1 = true;
+
+    function res_m(){
+      if(det_1==true)
+           counter_1++;
+      if(counter_1==1)
+          counter_1++;
+        $.getJSON('/paginate/2', {
+              page_1: counter_1
+            }, function(data) {
+            $("#res_1").html("");
+              var stringRes = "";
+              if(data.determiner==false)
+                det_1 = false;
+              else if(data.determiner==true)
+                det_1 = true;
+
+            for(i=0; i<data.size; i++){
+                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+            }
+            $("#res_1").append(stringRes);
+            console.log(counter_1);
+        });
+        return false;
+    }
+
+    function res_1_m(){
+        if(counter_1>1)
+            counter_1--;
+        $.getJSON('/paginate/2', {
+              page_1: counter_1
+            }, function(data) {
+            $("#res_1").html("");
+              var stringRes = "";
+
+            if(data.determiner==false)
+                det_1 = false;
+              else if(data.determiner==true)
+                det_1 = true;
+
+            for(i=0; i<data.size; i++){
+                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+            }
+            $("#res_1").append(stringRes);
+            console.log(counter_1);
+            
+        });
+        return false;
+    }
+
+function sendMail(){
+      $.getJSON('/sendRepsonse', {
+              name : $('input[name="resID"]').val(),
+              email : $('input[name="resEMAIL"]').val(),
+              body : $('textarea[name="resMSG"]').val()
+            }, function(data) {
+            $('input[name="resID"]').val('');
+            $('input[name="resEMAIL"]').val('');
+            $('textarea[name="resMSG"]').val('');
+            if(data.sent==true){
+              swal('Message Sent!');
+            }
+            else
+              swal('An error occured!');
+            
+        });
+        return false;
+}

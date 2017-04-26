@@ -5,9 +5,18 @@ from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role, Anonymous
 from forms import LoginForm, RegisterForm, EditForm, SearchForm
 from model import User, Role
+<<<<<<< HEAD
+from app import db, app, mail
+from decorators import required_roles, get_friends, get_friend_requests, send_email
+=======
 from app import db, app
 
 from decorators import required_roles, get_friends, get_friend_requests
+<<<<<<< HEAD
+=======
+>>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
+>>>>>>> 1cf7be276548e50cd65ed9b6451f3c6a28c6a688
+>>>>>>> 053fa6dbe87ab296eb033033cd2debc4cd51bc32
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -28,42 +37,92 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth_blueprint.login'
 login_manager.anonymous_user = Anonymous
 
-POSTS_PER_PAGE = 8
+POSTS_PER_PAGE = 4
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@auth_blueprint.route('/', methods=['GET', 'POST'])
-@auth_blueprint.route('/index', methods=['GET', 'POST'])
-@auth_blueprint.route('/index/<int:page>', methods=['GET', 'POST'])
-def index(page=1):
-    label, links =[], []
+def verify():
+    label =[]
     if current_user.isAuthenticated():
-        label = ["Account", "Log Out"]
-        links = ["/home", "/logout"]
-        p = True
+        label = [current_user.username, "Log Out", "/home", "/logout"]
     else:
-        label = ["Log In", "Sign Up"]
-        links = ["/login", "/register"]
-        p=False
+        label = ["Log In", "Sign Up", "/login", "/register"]
+    return label
 
-    users = User.query.order_by(desc(User.id)).paginate(page, POSTS_PER_PAGE, False)
-    return render_template('index_1.html', title='Home', users=users, label=label, links=links, dash_isAuthenticated=p)
+@auth_blueprint.route('/')
+@auth_blueprint.route('/index')
+def index():
+    label=verify()
+    users = User.query.order_by(desc(User.id)).paginate(1, POSTS_PER_PAGE, False)
+    users_for_most = User.query.order_by(User.id).paginate(1, POSTS_PER_PAGE, False)
+    return render_template('index.html', title='TravelPlanner-Home', users=users, user_m=users_for_most, label=label)
     #return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
- 
-@app.route('/SearchResult')
-def result():
-    search_string = request.args.get('searchbar')
-    resultt = db.session.query(User).filter(func.concat(User.username, ' ', User.email, ' ', User.description).like('%'+search_string+'%')).all()
-    #resultt, = resultt
-    usernameL, emailL, descriptionL = [], [], []
-    for i in range(0, len(resultt)):
-        usernameL.append(resultt[i].username)
-        emailL.append(resultt[i].email)
-        descriptionL.append(resultt[i].description)
 
-    return jsonify(result1=usernameL, result2=emailL, result3=descriptionL, size=len(usernameL))
+@auth_blueprint.route('/view/<username>', methods=['GET','POST'])
+def mock(username):
+    users = User.query.filter_by(username=username).first()
+    label, links =[], []
+    label = verify()
+    return render_template('view_trip.html', title=users.username, users=users, label=label)
+
+@auth_blueprint.route('/trip-plans/')
+@auth_blueprint.route('/trip-plans/<linklabel>', methods=['GET','POST'])
+def view_each(linklabel='all trips made in this site'):
+    label=verify()
+    til='Search Result'
+    users = db.session.query(User).filter(func.concat(User.username, ' ', User.first_name, ' ', User.last_name, ' ', User.email, ' ', User.description).like('%'+linklabel+'%')).all()
+    if linklabel=='most-popular':
+        til='Most Popular'
+        users = User.query.order_by(User.id).all()
+        linklabel='Most Popular'
+    elif linklabel=='newest-trip-plans':
+        til='Newest Trips'
+        users = User.query.order_by(desc(User.id)).all()
+        linklabel='Newest Trip Plans'
+    elif linklabel=='all trips made in this site':
+        til='All Trips'
+        users = User.query.order_by(User.id).all()
+        linklabel='All Trips'
+    elif linklabel=='filtered_result':
+        user_ = []
+        if request.args.get('option')=='all-trips':
+            users = User.query.order_by(User.id).all()
+        elif request.args.get('option')=='most-popular':
+            users = User.query.order_by(User.id).all()
+        elif request.args.get('option')=='newest-trip-plans':
+            users = User.query.order_by(desc(User.id)).all()
+
+        for user in users:
+            if (request.args.get('country') in user.username) or (request.args.get('city') in user.email):
+                user_.append(user)
+        return render_template('trip-plans.html', title=til, users=user_, label=label, search_label=request.args.get('city'))
+    return render_template('trip-plans.html', title=til, users=users, label=label, search_label=linklabel)
+
+@app.route('/paginate/<int:index>')
+def paginate(index):
+    usernameL, emailL, descriptionL = [], [], []
+    if index==1:
+        page_string = request.args.get('page')
+        users = User.query.order_by(desc(User.id)).paginate(int(page_string), POSTS_PER_PAGE, False)
+    elif index==2:
+        page_string = request.args.get('page_1')
+        users = User.query.order_by(User.id).paginate(int(page_string), POSTS_PER_PAGE, False)
+
+    for user in users.items:
+        usernameL.append(user.username)
+        emailL.append(user.email)
+        descriptionL.append(user.description)
+    determiner = users.has_next
+    print determiner
+    return jsonify(result1=usernameL, result2=emailL, result3=descriptionL, size=len(usernameL), determiner=determiner)
+
+@auth_blueprint.route('/sendRepsonse')
+def sendMail():
+    body = "From: %s \n Email: %s \n Message: %s" % (request.args.get('name'), request.args.get('email'), request.args.get('body'))
+    send_email('TravelPlanner', 'travelplannerSy@gmail.com', ['travelplannerSy@gmail.com'], body)
+    return jsonify(sent=True)
 
 @auth_blueprint.route('/admin')
 @login_required
@@ -176,28 +235,45 @@ def edit(username):
 def login():
     error = None
     form = LoginForm()
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            user = User.query.filter_by(username=request.form['username']).first()
-            if user.role_id == 3:
-                if user is not None and check_password_hash(user.password, request.form['password']):
-                    login_user(user)
-                    flash('You are now logged in!')
-                if user.first_login == True:
-                    user.first_login = False
-                    db.session.add(user)
-                    db.session.commit()
-                    return redirect(url_for('auth_blueprint.edit', username=request.form['username']))
-                return redirect(url_for('auth_blueprint.home', name=request.form['username']))
-            elif user.role_id == 1:
-                if user is not None and check_password_hash(user.password, request.form['password']):
-                    login_user(user)
-                    flash('You are now logged in!')
-                return redirect(url_for('auth_blueprint.addash', name=request.form['username']))
+    if current_user.is_active():
+        return redirect(url_for('auth_blueprint.index'))
+    else:
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                user = User.query.filter_by(username=request.form['username']).first()
+                if user.role_id == 3:
+                    if user is not None and check_password_hash(user.password, request.form['password']):
+                        login_user(user)
+                        flash('You are now logged in!')
+                    if user.first_login == True:
+                        user.first_login = False
+                        db.session.add(user)
+                        db.session.commit()
+                        return redirect(url_for('auth_blueprint.edit', username=request.form['username']))
+                    return redirect(url_for('auth_blueprint.home', name=request.form['username']))
+                elif user.role_id == 1:
+                    if user is not None and check_password_hash(user.password, request.form['password']):
+                        login_user(user)
+                        flash('You are now logged in!')
+                    return redirect(url_for('auth_blueprint.addash', name=request.form['username']))
+                else:
+                    return redirect(url_for('auth_blueprint.index'))
             else:
+<<<<<<< HEAD
+                error = 'Invalid username or password'
+        return render_template('users/signin.html', form=form, error=error)
+=======
                 return redirect(url_for('auth_blueprint.index'))
         else:
             error = 'Invalid username or password'
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+    return render_template('users/signin.html', form=form, error=error)
+>>>>>>> 1cf7be276548e50cd65ed9b6451f3c6a28c6a688
+
+>>>>>>> 053fa6dbe87ab296eb033033cd2debc4cd51bc32
 
     return render_template('users/signin.html', form=form, error=error)
 
@@ -205,6 +281,18 @@ def login():
 def register():
     form = RegisterForm()
     Role.insert_roles()
+<<<<<<< HEAD
+    if current_user.is_active():
+        return redirect(url_for('auth_blueprint.index'))
+    else:
+        if form.validate_on_submit():
+            user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)          
+            db.session.add(user)
+            db.session.commit()
+            flash('Log In')
+            return redirect(url_for('auth_blueprint.login'))
+        return render_template('users/registration.html', form=form)
+=======
     if form.validate_on_submit():
         user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)
         db.session.add(user)
@@ -213,6 +301,7 @@ def register():
         return redirect(url_for('auth_blueprint.login'))
 
     return render_template('users/registration.html', form=form)
+>>>>>>> 1cf7be276548e50cd65ed9b6451f3c6a28c6a688
 
 @auth_blueprint.route('/logout')
 @login_required
@@ -229,7 +318,7 @@ class NotificationView(BaseView):
 class Logout(BaseView):
     @expose('/')
     def index(self):
-        return redirect(url_for('auth_blueprint.login'))
+        return redirect(url_for('auth_blueprint.index'))
 
 admin.add_view(ModelView(User, db.session))
 #admin.add_view(ModelView(Trips, db.session))

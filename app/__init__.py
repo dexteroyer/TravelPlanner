@@ -1,9 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
+mail=Mail(app)
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'travelplannerSy@gmail.com'
+app.config['MAIL_PASSWORD'] = 'viatorem'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+mail=Mail(app)
 
 from auth import model
 
@@ -12,8 +22,14 @@ app.config.from_object('config')
 app.config['SECRET_KEY'] = 'flaskimplement'
 
 
+<<<<<<< HEAD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/travelplanner'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/travelplannerdb'
+=======
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/travelplanner'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/travelplannerdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:imawesome@127.0.0.1:5432/travelplannerdb'
+>>>>>>> 053fa6dbe87ab296eb033033cd2debc4cd51bc32
 
 
 from auth.views import auth_blueprint
