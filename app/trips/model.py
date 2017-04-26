@@ -6,11 +6,13 @@ class Trips(db.Model):
     tripName = db.Column(db.String(70))
     tripDateFrom = db.Column(db.Date)
     tripDateTo = db.Column(db.Date)
+    userID = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    def __init__(self, tripName, tripDateFrom, tripDateTo):
+    def __init__(self, tripName, tripDateFrom, tripDateTo, userID):
         self.tripName = tripName
         self.tripDateFrom = tripDateFrom
         self.tripDateTo = tripDateTo
+        self.userID = userID
 
     def __repr__(self):
         return '<tripName {}>'.format(self.tripName)

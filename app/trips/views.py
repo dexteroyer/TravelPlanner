@@ -1,9 +1,8 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.security import check_password_hash
+from flask_login import current_user
 from forms import TripForm
 from model import Trips
-from app import db, app
+from app import db
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -22,7 +21,8 @@ def addtrip():
         if tripForm.validate_on_submit():
             tripform = Trips(tripName=tripForm.trip_name.data,
                              tripDateFrom=tripForm.trip_date_from.data,
-                             tripDateTo=tripForm.trip_date_to.data)
+                             tripDateTo=tripForm.trip_date_to.data,
+                             userID=current_user.id)
 
             db.session.add(tripform)
             db.session.commit()
@@ -32,5 +32,5 @@ def addtrip():
 
 @trip_blueprint.route('/', methods=['GET'])
 def trips():
-    cursor = db.session.execute('SELECT tripName, tripDateFrom, tripDateTo from trips')
+    cursor = db.session.execute("SELECT tripName, tripDateFrom, tripDateTo from trips WHERE userID = current_user.id")
     return render_template('/trip.html', trips = cursor.fetchall())
