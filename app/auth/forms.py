@@ -51,3 +51,4 @@ class EditForm(Form):
 
 class SearchForm(Form):
     search = StringField('',validators=[DataRequired()])
+

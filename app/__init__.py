@@ -16,12 +16,16 @@ app.config['MAIL_USE_SSL'] = False
 mail=Mail(app)
 
 from auth import model
+from trips import model
 
 bootstrap = Bootstrap(app)
 app.config.from_object('config')
 app.config['SECRET_KEY'] = 'flaskimplement'
 
 
+
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/travelplanner'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/travelplannerdb'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1/travelplanner'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/travelplannerdb'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:imawesome@127.0.0.1:5432/travelplannerdb'

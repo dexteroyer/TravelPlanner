@@ -8,7 +8,6 @@ from model import User, Role
 from app import db, app, mail
 from decorators import required_roles, get_friends, get_friend_requests, send_email
 from app import db, app
-from decorators import required_roles
 from decorators import required_roles, get_friends, get_friend_requests
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
@@ -273,13 +272,6 @@ def register():
             flash('Log In')
             return redirect(url_for('auth_blueprint.login'))
         return render_template('users/registration.html', form=form)
-    if form.validate_on_submit():
-        user = User(username=request.form['username'], email=request.form['email'], password=request.form['password'], role_id=3)          
-        db.session.add(user)
-        db.session.commit()
-        flash('Log In')
-        return redirect(url_for('auth_blueprint.login'))
-    return render_template('users/registration.html', form=form)
 
 @auth_blueprint.route('/logout')
 @login_required
