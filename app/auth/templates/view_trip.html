@@ -50,16 +50,22 @@
         <section id="pricing" class="pricing-section">
             <div class="container">
                 <div class="row">
-                    <h3>{{ users.username }}</h3>
+                    <h3>{{ trips.tripName }}</h3>
                     <div>
                         <div class="col-sm-2 text-center">
                             <div class="container" style="display:inline; width:100%;">
                                 <div class="panel panel-default bootcards-media" style="width:100%;"> 
-                                    <div class="panel-heading" align="left" style="width: 100%;">{{ users.username }}</div>
+                                    <div class="panel-heading" align="left" style="width: 100%;">{{ trips.tripName }}</div>
                                     <div class="panel-body" style="width: 100%; height: 100%;" align="center">
                                     <img style="height: 100%; width: 100%; object-fit:contain;" src="https://i.ytimg.com/vi/QGiJFumHUPo/maxresdefault.jpg"/></div>
-                                    <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">{{ users.email }}
-                                    <a href="/view/{{ users.username }}" target="_blank" class="btn btn-primary">View Trip</a>
+                                    <div class="panel-footer" align="left" style="display: inline-block; width: 100%;"> 
+                                        <div class="row">
+                                            &nbsp; From: {{ trips.tripDateFrom }} 
+                                            <a href="/view/{{ trips.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
+                                        </div>
+                                        <div class="row">
+                                            &nbsp; To: {{ trips.tripDateTo }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

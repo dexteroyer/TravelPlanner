@@ -31,27 +31,42 @@ function return_Result(){
     window.location.replace("/trip-plans/"+res);
 }
 
+function extract_(stringSen){
+  var str = "";
+  for(i=5; i<16; i++){
+    str+=String(stringSen).charAt(i)
+  }
+  return str;
+}
+
 
 //Newest Trips and Most popular
 var counter = 1;
 var det = true;
 
 
-function state(username, email, description){
+function state(tripname, from, to){
       return   '<div class="col-sm-3 text-center">'+
                             '<div class="container" style="display:inline; width:100%;">'+
                                 '<div class="panel panel-default bootcards-media" style="width:100%;">'+ 
-                                    '<div class="panel-heading" align="left" style="width: 100%;">'+username+'</div>'+
+                                    '<div class="panel-heading" align="left" style="width: 100%;">'+tripname+'</div>'+
                                     '<div class="panel-body" style="width: 100%; height: 100%;" align="center">'+
                                     '<img style="height: 100%; width: 100%; object-fit:contain;" src="http://static2.businessinsider.com/image/58d14474d349f92a008b5bee/the-25-most-popular-travel-destinations-in-the-us.jpg"/></div>'+
-                                    '<div class="panel-footer" align="left" style="display: inline-block; width: 100%;">'+email+
-                                    '<a href="/view/'+username+'" target="_blank" class="btn btn-primary">View Trip</a>'+
+                                    '<div class="panel-footer" align="left" style="display: inline-block; width: 100%;">'+
+                                      '<div class="row">'+
+                                            '&nbsp; From:'+from+
+                                            '<a href="/view/'+tripname+'" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>'+
+                                        '</div>'+
+                                        '<div class="row">'+
+                                            '&nbsp; To:'+to+
+                                        '</div>'+
                                     '</div>'+
                                 '</div>'+
                             '</div>'+ 
                         '</div>';
 
 }
+
     function res(){
       if(det==true)
            counter++;
@@ -68,7 +83,7 @@ function state(username, email, description){
                 det = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
             }
             $("#res").append(stringRes);
             console.log(counter);
@@ -91,7 +106,7 @@ function state(username, email, description){
                 det = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
             }
             $("#res").append(stringRes);
             console.log(counter);
@@ -120,7 +135,7 @@ var det_1 = true;
                 det_1 = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
             }
             $("#res_1").append(stringRes);
             console.log(counter_1);
@@ -143,7 +158,7 @@ var det_1 = true;
                 det_1 = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], data.result2[i], data.result3[i]);
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
             }
             $("#res_1").append(stringRes);
             console.log(counter_1);

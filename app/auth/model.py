@@ -13,7 +13,7 @@ make_searchable()
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
-    __searchable__ = ['username', 'first_name', 'last_name']
+    #__searchable__ = ['username', 'first_name', 'last_name']
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), nullable=False)
@@ -68,18 +68,6 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return '<username {}>'.format(self.username)
 
-<<<<<<< HEAD
-
-# class Role(db.Model):
-#     __tablename__ = "role"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(15), unique=True)
-#     default = db.Column(db.Boolean, default=False, index=True)
-#     permissions = db.Column(db.Integer)
-#     users = db.relationship('User', backref='role', lazy='dynamic')
-
-=======
->>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1
     def gravatar(self, size=100, default='identicon', rating='g'):
         if request.is_secure:
             url = 'https://secure.gravatar.com/avatar'
@@ -129,8 +117,6 @@ class Connection(db.Model):
 
     __tablename__ = "connections"
 
-<<<<<<< HEAD
-=======
     connection_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_a_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user_b_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -146,4 +132,3 @@ class Connection(db.Model):
                                                                                       self.user_a_id,
                                                                                       self.user_b_id,
                                                                                       self.status)
->>>>>>> c467f2f94e551be06f4b31e5175bf8599fa5ccd1

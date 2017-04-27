@@ -32,5 +32,5 @@ def addtrip():
 
 @trip_blueprint.route('/', methods=['GET'])
 def trips():
-    cursor = db.session.execute('SELECT tripName, tripDateFrom, tripDateTo from trips')
+    cursor = db.session.execute('SELECT trips.tripName, trips.tripDateFrom, trips.tripDateTo FROM public.trips')
     return render_template('/trip.html', trips = cursor.fetchall())
