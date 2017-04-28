@@ -17,5 +17,15 @@ class Trips(db.Model):
     def __repr__(self):
         return '<tripName {}>'.format(self.tripName)
 
+class Itineraries(db.Model):
+    __tablename__ = "itineraries"
+    itineraryID = db.Column(db.Integer, primary_key=True)
+    itineraryName = db.Column(db.String(70))
+    itineraryDesc = db.Column(db.String(1000))
+    itineraryDateFrom = db.Column(db.Date)
+    itineraryDateTo = db.Column(db.Date)
+    tripID = db.Column(db.Integer, db.ForeignKey("trips.tripID"))
+
+
 
 
