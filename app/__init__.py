@@ -37,6 +37,8 @@ app.register_blueprint(auth_blueprint)
 from trips.views import trip_blueprint
 app.register_blueprint(trip_blueprint)
 
+from landing.views import landing_blueprint
+app.register_blueprint(landing_blueprint)
 
 db.create_all()
 

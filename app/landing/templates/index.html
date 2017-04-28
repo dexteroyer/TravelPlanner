@@ -153,7 +153,7 @@
                                             <div class="dropdown dropdown-lg">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
                                                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                                    <form class="form-horizontal" role="form" name="form1" action="/trip-plans/filtered_result" method="get">
+                                                    <form class="form-horizontal" role="form" name="form1" action="/main/trip-plans/filtered_result" method="get">
                                                       <div class="form-group">
                                                         <label for="filter">Filter by</label>
                                                         <select class="form-control" id="filterOptions" name="option" required>
@@ -198,10 +198,11 @@
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
-                                            <a href="/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
+                                            <a href="/main/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
                                         </div>
                                         <div class="row">
                                             &nbsp; To: {{ trip.tripDateTo }}
+                                            &nbsp; {{ trip.viewsNum }} views
                                         </div>
                                     </div>
                                 </div>
@@ -217,7 +218,7 @@
                             <a id="a" class="btn btn-primary btn-arrow-left" onclick="res_1();" href="javascript:void(0)"><i class="fa fa-chevron-left" aria-hidden="true"></i></a> 
                             <a id="a" class="btn btn-primary btn-arrow-right" onclick="res();" href="javascript:void(0)"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                             <div align="right">
-                                <a href="/trip-plans/newest-trip-plans" target="_blank"><font size="3">See all&rarr;</font></a>
+                                <a href="/main/trip-plans/newest-trip-plans" target="_blank"><font size="3">See all&rarr;</font></a>
                             </div>
                     </div>
                     <div id="res">
@@ -231,10 +232,11 @@
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
-                                            <a href="/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
+                                            <a href="/main/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
                                         </div>
                                         <div class="row">
                                             &nbsp; To: {{ trip.tripDateTo }}
+                                            &nbsp; {{ trip.viewsNum }} views
                                         </div>
                                     </div>
                                 </div>
@@ -250,7 +252,7 @@
                             <a id="a" class="btn btn-primary btn-arrow-left" onclick="res_1_m();" href="javascript:void(0)"><i class="fa fa-chevron-left" aria-hidden="true"></i></a> 
                             <a id="a" class="btn btn-primary btn-arrow-right" onclick="res_m();" href="javascript:void(0)"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                             <div align="right">
-                                <a href="/trip-plans/most-popular" target="_blank"><font size="3">See all&rarr;</font></a>
+                                <a href="/main/trip-plans/most-popular" target="_blank"><font size="3">See all&rarr;</font></a>
                             </div>
                     </div>
                     <div id="res_1">
@@ -264,10 +266,11 @@
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;"> 
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
-                                            <a href="/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
+                                            <a href="/main/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
                                         </div>
                                         <div class="row">
                                             &nbsp; To: {{ trip.tripDateTo }}
+                                            &nbsp; {{ trip.viewsNum }} views
                                         </div>
                                     </div>
                                 </div>
