@@ -28,15 +28,7 @@ $(document).ready(function() {
         });*/
 function return_Result(){
     var res = $('input[name="searchbar"]').val();
-    window.location.replace("/trip-plans/"+res);
-}
-
-function extract_(stringSen){
-  var str = "";
-  for(i=5; i<16; i++){
-    str+=String(stringSen).charAt(i)
-  }
-  return str;
+    window.location.replace("/main/trip-plans/"+res);
 }
 
 
@@ -45,7 +37,7 @@ var counter = 1;
 var det = true;
 
 
-function state(tripname, from, to){
+function state(tripname, from, to, views){
       return   '<div class="col-sm-3 text-center">'+
                             '<div class="container" style="display:inline; width:100%;">'+
                                 '<div class="panel panel-default bootcards-media" style="width:100%;">'+ 
@@ -55,10 +47,11 @@ function state(tripname, from, to){
                                     '<div class="panel-footer" align="left" style="display: inline-block; width: 100%;">'+
                                       '<div class="row">'+
                                             '&nbsp; From:'+from+
-                                            '<a href="/view/'+tripname+'" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>'+
+                                            '<a href="/main/view/'+tripname+'" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>'+
                                         '</div>'+
                                         '<div class="row">'+
                                             '&nbsp; To:'+to+
+                                            '&nbsp; '+views+' views'+
                                         '</div>'+
                                     '</div>'+
                                 '</div>'+
@@ -72,7 +65,7 @@ function state(tripname, from, to){
            counter++;
       if(counter==1)
           counter++;
-        $.getJSON('/paginate/1', {
+        $.getJSON('/main/paginate/1', {
               page: counter
             }, function(data) {
             $("#res").html("");
@@ -83,7 +76,7 @@ function state(tripname, from, to){
                 det = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17), data.result4[i]);
             }
             $("#res").append(stringRes);
             console.log(counter);
@@ -94,7 +87,7 @@ function state(tripname, from, to){
     function res_1(){
         if(counter>1)
             counter--;
-        $.getJSON('/paginate/1', {
+        $.getJSON('/main/paginate/1', {
               page: counter
             }, function(data) {
             $("#res").html("");
@@ -106,7 +99,7 @@ function state(tripname, from, to){
                 det = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17), data.result4[i]);
             }
             $("#res").append(stringRes);
             console.log(counter);
@@ -124,7 +117,7 @@ var det_1 = true;
            counter_1++;
       if(counter_1==1)
           counter_1++;
-        $.getJSON('/paginate/2', {
+        $.getJSON('/main/paginate/2', {
               page_1: counter_1
             }, function(data) {
             $("#res_1").html("");
@@ -135,7 +128,7 @@ var det_1 = true;
                 det_1 = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17), data.result4[i]);
             }
             $("#res_1").append(stringRes);
             console.log(counter_1);
@@ -146,7 +139,7 @@ var det_1 = true;
     function res_1_m(){
         if(counter_1>1)
             counter_1--;
-        $.getJSON('/paginate/2', {
+        $.getJSON('/main/paginate/2', {
               page_1: counter_1
             }, function(data) {
             $("#res_1").html("");
@@ -158,7 +151,7 @@ var det_1 = true;
                 det_1 = true;
 
             for(i=0; i<data.size; i++){
-                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17));
+                stringRes+=state(data.result1[i], JSON.stringify(data.result2[i]).slice(5,17), JSON.stringify(data.result3[i]).slice(5,17), data.result4[i]);
             }
             $("#res_1").append(stringRes);
             console.log(counter_1);
@@ -168,7 +161,7 @@ var det_1 = true;
     }
 
 function sendMail(){
-      $.getJSON('/sendRepsonse', {
+      $.getJSON('/main/sendRepsonse', {
               name : $('input[name="resID"]').val(),
               email : $('input[name="resEMAIL"]').val(),
               body : $('textarea[name="resMSG"]').val()

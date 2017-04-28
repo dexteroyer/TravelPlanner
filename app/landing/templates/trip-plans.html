@@ -32,15 +32,15 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">TravelPlanner</a>
+                    <a class="navbar-brand" href="/main/">TravelPlanner</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav  smooth-scroll navbar-right">
-                        <li><a href="/#intro">Intro</a></li>
-                        <li><a href="/#features">Features</a></li>
-                        <li><a href="/#pricing">Trip Plans</a></li>
-                        <li><a href="/#team">Team</a></li>
-                        <li><a href="/#contact">About</a></li>
+                        <li><a href="/main/#intro">Intro</a></li>
+                        <li><a href="/main/#features">Features</a></li>
+                        <li><a href="/main/#pricing">Trip Plans</a></li>
+                        <li><a href="/main/#team">Team</a></li>
+                        <li><a href="/main/#contact">About</a></li>
                         <li class="nav-button"><a href="{{ label[2] }}">{{ label[0] }}</a></li>
                         <li class="nav-button"><a href="{{ label[3] }}">{{ label[1] }}</a></li>
                     </ul>
@@ -67,7 +67,7 @@
                                             <div class="dropdown dropdown-lg">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
                                                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                                    <form class="form-horizontal" role="form" name="form1" action="/trip-plans/filtered_result" method="get">
+                                                    <form class="form-horizontal" role="form" name="form1" action="/main/trip-plans/filtered_result" method="get">
                                                       <div class="form-group">
                                                         <label for="filter">Filter by</label>
                                                         <select class="form-control" id="filterOptions" name="option" required>
@@ -111,10 +111,11 @@
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
-                                            <a href="/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
+                                            <a href="/main/view/{{ trip.tripName }}" target="_blank" class="btn btn-primary" style="float: right;">View Trip</a>
                                         </div>
                                         <div class="row">
                                             &nbsp; To: {{ trip.tripDateTo }}
+                                            &nbsp; {{ trip.viewsNum }} views
                                         </div>
                                     </div>
                                 </div>
