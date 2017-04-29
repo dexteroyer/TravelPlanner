@@ -8,22 +8,12 @@ from forms import LoginForm, RegisterForm, EditForm, SearchForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles, get_friends, get_friend_requests, allowed_file
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from flask_admin import BaseView, expose
 from app.landing.views import landing_blueprint
 from werkzeug import secure_filename
 from PIL import Image
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
-# from flask_admin import Admin
-# from flask_admin.contrib.sqla import ModelView
-# from flask_admin import BaseView, expose
-
-# admin = Admin(app, template_mode='bootstrap3')
-
-admin = Admin(app, template_mode='bootstrap3')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -36,11 +26,109 @@ img_folder = 'app/auth/static/images/'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# --------> START ADMIN
 @auth_blueprint.route('/admin')
 @login_required
 @required_roles('Admin')
 def addash():
-    return 'welcome!'
+    return render_template('admin/admindashboard.html')
+
+@auth_blueprint.route('/admin/users', methods=['GET','POST'])
+@login_required
+@required_roles('Admin')
+def manageusers():
+    result = User.query.all()
+    return render_template('admin/users.html', result=result)
+
+@auth_blueprint.route('/admin/users/new/<username>', methods=['GET','POST'])
+@login_required
+@required_roles('Admin')
+def createusers(username):
+    user = User.query.filter_by(username=username).first()
+    form = EditForm()
+    if form.validate_on_submit():
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.address = form.address.data
+        user.city = form.city.data
+        user.country = form.country.data
+        user.birth_date = form.birth_date.data
+        user.contact_num = form.contact_num.data
+        user.description = form.description.data
+        db.session.add(user)
+        db.session.commit()
+        flash("Your changes have been saved.")
+        return render_template('admin/users.html')
+    else:
+        form.first_name.data = user.first_name
+        form.last_name.data = user.last_name
+        form.address.data = user.address
+        form.city.data = user.city
+        form.country.data = user.country
+        form.birth_date.data = user.birth_date
+        form.contact_num.data = user.contact_num
+        form.description.data = user.description
+        return render_template('admin/createusers.html', user=user, form=form)
+
+@auth_blueprint.route('/admin/users/remove/<username>', methods=['GET','POST'])
+@login_required
+@required_roles('Admin')
+def deleteusers(username):
+    user = User.query.filter_by(username=username).first()
+    db.session.delete(user)
+    db.session.commit()
+    return render_template('admin/users.html')
+
+@auth_blueprint.route('/admin/users/add')
+@login_required
+@required_roles('Admin')
+def adduser():
+    return render_template('admin/createusers.html')
+
+@auth_blueprint.route('/admin/users/edit/<username>', methods = ['GET', 'POST'])
+@login_required
+@required_roles('Admin')
+def editusers(username):
+    user = User.query.filter_by(username=username).first()
+    form = EditForm()
+    if form.validate_on_submit():
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.address = form.address.data
+        user.city = form.city.data
+        user.country = form.country.data
+        user.birth_date = form.birth_date.data
+        user.contact_num = form.contact_num.data
+        user.description = form.description.data
+        db.session.add(user)
+        db.session.commit()
+        flash("Your changes have been saved.")
+        return render_template('admin/users.html')
+    else:
+        form.first_name.data = user.first_name
+        form.last_name.data = user.last_name
+        form.address.data = user.address
+        form.city.data = user.city
+        form.country.data = user.country
+        form.birth_date.data = user.birth_date
+        form.contact_num.data = user.contact_num
+        form.description.data = user.description
+        return render_template('admin/editusers.html', user=user, form=form)
+
+@auth_blueprint.route('/admin/trips')
+@login_required
+@required_roles('Admin')
+def managetrips():
+    result = Trips.query.all()
+    return render_template('admin/trips.html', result=result)
+
+#@auth_blueprint.route('/admin/trips/roles')
+#@login_required
+#@required_roles('Admin')
+#def managetrips():
+ #   result = Roles.query.all()
+ #   return render_template('admin/trips.html', result=result)
+# END ADMIN <----------
 
 @auth_blueprint.route('/home')
 @login_required
@@ -220,18 +308,3 @@ def logout():
     logout_user()
     flash('You were logged out.')
     return redirect(url_for('auth_blueprint.login'))
-
-class NotificationView(BaseView):
-    @expose('/')
-    def index(self):
-        return self.render('admin/notify.html')
-
-class Logout(BaseView):
-    @expose('/')
-    def index(self):
-        return redirect(url_for('landing_blueprint.index'))
-
-admin.add_view(ModelView(User, db.session))
-#admin.add_view(ModelView(Trips, db.session))
-admin.add_view(NotificationView(name='Notification', endpoint='notify'))
-admin.add_view(Logout(name='Logout', endpoint='logout'))
