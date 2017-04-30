@@ -30,6 +30,7 @@ class User(db.Model, UserMixin):
     birth_date = db.Column(db.Date)
     contact_num = db.Column(db.BIGINT)
     description = db.Column(db.String(300))
+    profile_pic = db.Column(db.String(70))
     
     #User Information modification on first login
     first_login = db.Column(db.Boolean, default=True, nullable=False)
@@ -48,6 +49,7 @@ class User(db.Model, UserMixin):
         self.birth_date = None
         self.contact_num = 0
         self.description = ""
+        self.profile_pic = "default"
 
     def isAuthenticated(self):
         return True

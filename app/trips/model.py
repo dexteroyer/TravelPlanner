@@ -8,13 +8,15 @@ class Trips(db.Model):
     tripDateTo = db.Column(db.Date)
     userID = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     viewsNum = db.Column(db.Integer)
+    img_thumbnail = db.Column(db.String(70))
 
-    def __init__(self, tripName, tripDateFrom, tripDateTo, userID):
+    def __init__(self, tripName, tripDateFrom, tripDateTo, userID, img_thumbnail):
         self.tripName = tripName
         self.tripDateFrom = tripDateFrom
         self.tripDateTo = tripDateTo
         self.userID = userID
         self.viewsNum = 0;
+        self.img_thumbnail = img_thumbnail
 
     def __repr__(self):
         return '<tripName {}>'.format(self.tripName)

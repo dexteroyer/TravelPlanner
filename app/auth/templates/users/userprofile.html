@@ -191,7 +191,12 @@
                             <div class="content">
                                 <div class="author">
                                      <a href="#">
-                                    <img class="avatar border-gray" src="{{current_user.gravatar(size=256)}}" alt="..."/>
+                                    <!--<img class="avatar border-gray" src="{{current_user.gravatar(size=256)}}" alt="..."/>-->
+                                    {% if current_user.profile_pic=='default' %}
+                                        <img class="avatar border-gray" src="{{current_user.gravatar(size=256)}}" alt="..."/>
+                                     {% else %}
+                                        <img class="avatar border-gray" src="{{ url_for('.static', filename='images/users/'+current_user.profile_pic) }} " alt="..."/>
+                                     {% endif %}
 
                                       <h4 class="title">{{current_user.first_name}} {{current_user.last_name}}<br/>
                                          <small>{{current_user.username}}</small><br><br>

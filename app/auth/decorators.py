@@ -65,3 +65,9 @@ def get_friends(id):
                                                                                   Connection.user_b_id == User.id)
 
     return friends
+
+available_extension = set(['png', 'jpg', 'PNG', 'JPG'])
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in available_extension

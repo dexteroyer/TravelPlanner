@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from werkzeug.security import check_password_hash
@@ -6,11 +7,13 @@ from model import User, Role, Anonymous
 from forms import LoginForm, RegisterForm, EditForm, SearchForm
 from model import User, Role
 from app import db, app
-from decorators import required_roles, get_friends, get_friend_requests
+from decorators import required_roles, get_friends, get_friend_requests, allowed_file
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from app.landing.views import landing_blueprint
+from werkzeug import secure_filename
+from PIL import Image
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
@@ -27,6 +30,8 @@ login_manager.init_app(app)
 login_manager.login_view = 'auth_blueprint.login'
 login_manager.anonymous_user = Anonymous
 
+img_folder = 'app/auth/static/images/'
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -41,7 +46,7 @@ def addash():
 @login_required
 @required_roles('User')
 def home():
-    return render_template('users/dashboard.html', username=current_user.username)
+    return render_template('users/dashboard.html', username=current_user.username, profile=current_user.profile_pic)
 
 
 @auth_blueprint.route('/new-trip')
@@ -113,19 +118,41 @@ def user_profile(username):
 def edit(username):
     user = User.query.filter_by(username=username).first()
     form = EditForm()
-    if form.validate_on_submit():
-        current_user.first_name = form.first_name.data
-        current_user.last_name = form.last_name.data
-        current_user.address = form.address.data
-        current_user.city = form.city.data
-        current_user.country = form.country.data
-        current_user.birth_date = form.birth_date.data
-        current_user.contact_num = form.contact_num.data
-        current_user.description = form.description.data
-        db.session.add(current_user)
-        db.session.commit()
-        flash("Your changes have been saved.")
-        return render_template('users/userprofile.html', user=user)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            current_user.first_name = form.first_name.data
+            current_user.last_name = form.last_name.data
+            current_user.address = form.address.data
+            current_user.city = form.city.data
+            current_user.country = form.country.data
+            current_user.birth_date = form.birth_date.data
+            current_user.contact_num = form.contact_num.data
+            current_user.description = form.description.data
+
+            if form.file.data.filename==None or form.file.data.filename=='':
+                current_user.profile_pic = current_user.profile_pic
+            else:
+                if(current_user.profile_pic=='default'):
+                    pass
+                else:
+                    os.remove(img_folder+'users/'+str(current_user.profile_pic))
+
+                current_user.profile_pic=form.file.data.filename
+
+                if form.file.data and allowed_file(form.file.data.filename):
+                    filename = secure_filename(form.file.data.filename)
+                    form.file.data.save(os.path.join(img_folder+'users/', filename))
+                ex = os.path.splitext(filename)[1][1:]
+                st = img_folder+'users/'+filename
+                img = Image.open(open(str(st), 'rb'))
+                img.save(str(st), format=None, quality=50)
+
+            db.session.add(current_user)
+            db.session.commit()
+
+
+            flash("Your changes have been saved.")
+            return render_template('users/userprofile.html', user=user)
     else:
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
