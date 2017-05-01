@@ -65,6 +65,12 @@
                         <p>Trips</p>
                     </a>
                 </li>
+                <li>
+                    <a href="/admin/connections">
+                        <i class="pe-7s-graph"></i>
+                        <p>Connections</p>
+                    </a>
+                </li>
             </ul>
     	</div>
     </div>
@@ -105,42 +111,32 @@
         </nav>
         <div class="container-fluid">
             <div class="card">
-                <a href="/admin/users/add" class="btn" role="button">Add User</a>
+                <a href="/admin/trips/new" class="btn" role="button">Add Trip</a>
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th colspan="2">Action</th>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Address</th>
-                            <th>City</th>
-                            <th>Country</th>
-                            <th>Birthdate</th>
-                            <th>Contact Number</th>
-                            <th>Description</th>
+                            <th>Trip ID</th>
+                            <th>Trip Name</th>
+                            <th>Trip Date From</th>
+                            <th>Trip Date To</th>
+                            <th>User ID</th>
+                            <th>Views</th>
+                            <th>Image Thumbnail</th>
                         </tr>
                     </thead>
                     {% for r in result %}
                     <tbody>
                         <tr>
-                            <td><a href="/admin/users/edit/{{r.username}}">Edit</a></td>
-                            <td><a href="/admin/users/remove/{{r.username}}">Delete</a></td>
+                            <td><a href="/admin/trips/new/{{r.tripName}}">Edit</a></td>
+                            <td><a href="/admin/trips/remove/{{r.tripName}}">Delete</a></td>
+                            <td>{{r.tripID}}</td>
+                            <td>{{r.tripName}}</td>
+                            <td>{{r.tripDateFrom}}</td>
+                            <td>{{r.tripDateTo}}</td>
                             <td>{{r.id}}</td>
-                            <td>{{r.username}}</td>
-                            <td>{{r.email}}</td>
-                            <td>{{r.role_id}}</td>
-                            <td>{{r.first_name}}</td>
-                            <td>{{r.last_name}}</td>
-                            <td>{{r.address}}</td>
-                            <td>{{r.city}}</td>
-                            <td>{{r.country}}</td>
-                            <td>{{r.birth_date}}</td>
-                            <td>{{r.contact_num}}</td>
-                            <td>{{r.description}}</td>
+                            <td>{{r.viewsNumber}}</td>
+                            <td>{{r.img_thumbnail}}</td>
                         </tr>
                     </tbody>
                     {% endfor %}
