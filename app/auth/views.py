@@ -2,9 +2,8 @@ import os
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, AnonymousUserMixin
 from werkzeug.security import check_password_hash
-from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role, Anonymous
-from forms import LoginForm, RegisterForm, EditForm, SearchForm
+from forms import LoginForm, RegisterForm, EditForm, SearchForm, TripForm
 from model import User, Role
 from app import db, app
 from decorators import required_roles, get_friends, get_friend_requests, allowed_file
@@ -27,41 +26,6 @@ img_folder = 'app/auth/static/images/'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --------> START ADMIN
-@auth_blueprint.route('/admin')
-@login_required
-@required_roles('Admin')
-def addash():
-    return render_template('admin/admindashboard.html')
-
-@auth_blueprint.route('/admin/users/sort/<role_id>', methods=['GET', 'POST'])
-@login_required
-@required_roles('Admin')
-def sortadmin(role_id):
-    result = User.query.filter_by(role_id='1')
-    return render_template('admin/users.html', result=result)
-
-@auth_blueprint.route('/admin/users/sort/moderator', methods=['GET', 'POST'])
-@login_required
-@required_roles('Admin')
-def sortmod():
-    result = User.query.filter_by(role_id='2')
-    return render_template('admin/users.html', result=result)
-
-@auth_blueprint.route('/admin/users/sort/user', methods=['GET', 'POST'])
-@login_required
-@required_roles('Admin')
-def sortuser():
-    result = User.query.filter_by(role_id='3')
-    return render_template('admin/users.html', result=result)
-
-@auth_blueprint.route('/admin/users/create', methods=['GET', 'POST'])
-@login_required
-@required_roles('Admin')
-def createuser():
-    form = EditForm()
-    return render_template('admin/createusers.html', form = form)
-
 # USERS --> read
 @auth_blueprint.route('/admin/users', methods=['GET','POST'])
 @login_required
@@ -70,6 +34,7 @@ def manageusers():
     result = User.query.all()
     return render_template('admin/users.html', result=result)
 
+#open addusers()
 @auth_blueprint.route('/admin/users/create', methods=['GET','POST'])
 @login_required
 @required_roles('Admin')
@@ -77,29 +42,32 @@ def createusers():
     form = EditForm()
     return render_template('admin/createusers.html', form=form)
 
-#create
-auth_blueprint.route('/admin/users/add', methods=['GET','POST'])
+#create user
+auth_blueprint.route('/admin/users/new', methods=['GET','POST'])
 @login_required
 @required_roles('Admin')
 def addusers():
-    user = User(username=request.form['username'], role_id=request.form['role_id'], first_name=request.form['first_name'],
-                last_name=request.form['last_name'], address=request.form['address'], city=request.form['city'],
-                country=request.form['country'], birth_date=request.form['birth_date'], contact_num=request.form['contact_num'],
-                description=request.form['description'])
-    result = User.query.all()
-    db.session.add(user)
-    db.session.commit()
-    flash("Your changes have been saved.")
-    return render_template('admin/users.html', result=result)
+    form = EditForm()
+    if form.validate_on_submit():
+        user = User.create(username=request.form['username'], role_id=request.form['role_id'], first_name=request.form['first_name'],
+                    last_name=request.form['last_name'], address=request.form['address'], city=request.form['city'],
+                    country=request.form['country'], birth_date=request.form['birth_date'], contact_num=request.form['contact_num'],
+                    description=request.form['description'])
+        db.session.add(user)
+        db.session.commit()
+        result = User.query.all()
+        flash("Your changes have been saved.")
+        return render_template('admin/users.html', result=result)
+    return render_template('admin/createusers.html', form=form)
 
 #update
-@auth_blueprint.route('/admin/users/edit/<username>', methods=['GET','POST'])
+@auth_blueprint.route('/admin/users/edit/<username>', methods = ['GET', 'POST'])
 @login_required
 @required_roles('Admin')
 def editusers(username):
     user = User.query.filter_by(username=username).first()
-    result = User.query.all()
     form = EditForm()
+    result = User.query.all()
     if form.validate_on_submit():
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
@@ -139,15 +107,9 @@ def deleteusers(username):
 @auth_blueprint.route('/admin/trips')
 @login_required
 @required_roles('Admin')
-<<<<<<< HEAD
-def adduser():
-    #return redirect(url_for('auth_blueprint.createusers'))
-    return render_template('admin/createusers.html')
-=======
 def managetrips():
     result = Trips.query.all()
     return render_template('admin/trips.html', result=result)
->>>>>>> 724d37450fc96ad32f6c1b00ded2cacf529b699a
 
 #create
 @auth_blueprint.route('/admin/trips/new')
@@ -157,17 +119,17 @@ def createtrip():
     form = TripForm()
     return render_template('admin/createtrip.html', form=form)
 
-@auth_blueprint.route('/admin/trips/new/<tripName>', methods=['GET','POST'])
+@auth_blueprint.route('/admin/trips/add', methods=['GET','POST'])
 @login_required
 @required_roles('Admin')
-def addtrip(tripName):
-    trips = Trips.query.filter_by(tripName=tripName).first()
+def addtrip():
+    trips = Trips(tripName=request.form['tripName'], tripDateFrom=request.form['tripDateFrom'], tripDateTo=request.form['tripDateTo'],
+                  id=request.form['id'], img_thumbnail=request.form['img_thumbnail'])
     form = TripForm()
     trips.tripName = form.tripName.data
     trips.tripDateFrom = form.tripDateFrom.data
     trips.tripDateTo = form.tripDateTo.data
     trips.id = form.id.data
-    trips.viewsNumber = form.viewsNumber.data
     trips.img_thumbnail = form.img_thumbnail.data
     db.session.add(trips)
     db.session.commit()
@@ -219,6 +181,7 @@ def removetrips(tripName):
 def connections():
     return render_template('admin/connections.html')
 # END ADMIN <----------
+
 
 @auth_blueprint.route('/home')
 @login_required
