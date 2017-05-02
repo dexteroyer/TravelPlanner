@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for
 from flask_login import current_user
-from forms import TripForm
-from model import Trips
+from forms import TripForm, ItineraryForm, EditTripForm
+from model import Trips, Itineraries
 from app import db
 
 trip = Flask(__name__)
@@ -29,9 +29,43 @@ def addtrip():
 
 @trip_blueprint.route('/', methods=['GET'])
 def trips():
-    cursor = db.session.execute("""SELECT "tripName", "tripDateFrom", "tripDateTo", "viewsNum" from "trips" WHERE "userID" = '{userID_}'""".format(userID_=current_user.id))
-    return render_template('/trip.html', trips = cursor.fetchall())
+    trip = Trips.query.filter_by(userID=current_user.id)
+    return render_template('/trip.html', trips=trip)
 
-@trip_blueprint.route('/<tripName>/itineraries', methods=[''])
+@trip_blueprint.route('/<tripName>/edit', methods=['GET', 'POST'])
+def editTrips(tripName):
+    error = None
+    tripname = Trips.query.filter_by(tripName=tripName).first()
+    form = EditTripForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            form = Itineraries(tripName=EditTripForm.trip_name.data,
+                             tripDateFrom=EditTripForm.trip_date_from.data,
+                             tripDateTo=EditTripForm.trip_date_to.data)
+            db.session.add(form)
+            db.session.commit()
+            return redirect(url_for('trip_blueprint.editTrips'))
+    return render_template('edittrip.html', tripname=tripname, error=error, form=form)
+
+
+@trip_blueprint.route('/<tripName>/additineraries', methods=['GET', 'POST'])
 def addItinerary(tripName):
-    return "Hello World!"
+    error = None
+    itineraryForm = ItineraryForm()
+    if request.method == 'POST':
+        if itineraryForm.validate_on_submit():
+            itineraryform = Itineraries(itineraryName=itineraryForm.itinerary_name.data,
+                             itineraryDateFrom=itineraryForm.itinerary_date_from.data,
+                             itineraryDateTo=itineraryForm.itinerary_date_to.data,
+                             itineraryTimeFrom=itineraryForm.itinerary_time_from.data,
+                             itineraryTimeTo=itineraryForm.itinerary_time_to.data,
+                             tripID=tripName.tripID)
+            db.session.add(itineraryform)
+            db.session.commit()
+            return redirect(url_for('trip_blueprint.addItinerary'))
+    return render_template('addItinerary.html', form=itineraryForm, error=error)
+
+@trip_blueprint.route('/<tripName>/itineraries', methods=['GET'])
+def itineraries():
+    error = None
+    return render_template('addItinerary.html', error=error)

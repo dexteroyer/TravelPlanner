@@ -14,7 +14,7 @@ class Trips(db.Model):
         self.tripDateFrom = tripDateFrom
         self.tripDateTo = tripDateTo
         self.userID = userID
-        self.viewsNum = 0;
+        self.viewsNum = 0
 
     def __repr__(self):
         return '<tripName {}>'.format(self.tripName)

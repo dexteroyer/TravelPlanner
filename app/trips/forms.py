@@ -7,3 +7,15 @@ class TripForm(Form):
     trip_name = StringField('Trip Name', validators=[DataRequired()])
     trip_date_from = DateField('From(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
     trip_date_to = DateField('To(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+
+class ItineraryForm(Form):
+    itinerary_name = StringField('Itinerary Name', validators=[DataRequired()])
+    itinerary_date_from = DateField('From(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    itinerary_date_to = DateField('To(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    itinerary_time_from = StringField('From(hh:mm)', validators=[DataRequired()])
+    itinerary_time_to = StringField('To(hh:mm)', validators=[DataRequired()])
+
+class EditTripForm(Form):
+    trip_name = StringField('Trip Name', validators=[DataRequired()])
+    trip_date_from = DateField('From(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    trip_date_to = DateField('To(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
