@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, Blueprint, request, flash, u
 from flask_login import current_user
 from flask_login import LoginManager, current_user, AnonymousUserMixin
 from app import db, app
-from decorators import send_email
+from decorators import send_email, verify
 from sqlalchemy import func, desc
 from app.trips.model import Trips
 from model import Anonymous
@@ -15,14 +15,6 @@ login_manager.init_app(app)
 login_manager.anonymous_user = Anonymous
 
 POSTS_PER_PAGE = 4
-
-def verify():
-	label =[]
-   	if current_user.isAuthenticated():
-   		label = [current_user.username, "Log Out", "/home", "/logout"]
-   	else:
-   		label = ["Log In", "Sign Up", "/login", "/register"]
-   	return label
 
 @landing_blueprint.route('/')
 @landing_blueprint.route('/index')

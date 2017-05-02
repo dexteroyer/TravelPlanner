@@ -1,6 +1,23 @@
 from threading import Thread
 from app import app, mail
 from flask_mail import Message
+from flask_login import current_user
+
+def determine(id_):
+    detail=""
+    if(id_==1):
+        detail="/admin"
+    elif(id_==3):
+        detail="/home"
+    return detail
+
+def verify():
+	label =[]
+   	if current_user.isAuthenticated():
+   		label = [current_user.username, "Log Out", determine(current_user.role_id), "/logout"]
+   	else:
+   		label = ["Log In", "Sign Up", "/login", "/register"]
+   	return label
 
 def send_async_email(app, msg):
     with app.app_context():

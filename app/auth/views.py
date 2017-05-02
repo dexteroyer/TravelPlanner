@@ -11,6 +11,7 @@ from decorators import required_roles, get_friends, get_friend_requests, allowed
 from app.landing.views import landing_blueprint
 from werkzeug import secure_filename
 from PIL import Image
+from app.trips.model import Trips
 
 auth = Flask(__name__)
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static', static_url_path='/static/')
@@ -83,6 +84,7 @@ def deleteusers(username):
 @login_required
 @required_roles('Admin')
 def adduser():
+    #return redirect(url_for('auth_blueprint.createusers'))
     return render_template('admin/createusers.html')
 
 @auth_blueprint.route('/admin/users/edit/<username>', methods = ['GET', 'POST'])
@@ -290,7 +292,7 @@ def login():
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    Role.insert_roles()
+    Role.insert_roles(3)
     if current_user.is_active():
         return redirect(url_for('landing_blueprint.index'))
     else:
