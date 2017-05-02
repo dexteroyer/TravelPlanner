@@ -3,9 +3,6 @@ from flask_login import current_user
 from forms import TripForm
 from model import Trips
 from app import db
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from flask_admin import BaseView, expose
 
 trip = Flask(__name__)
 trip_blueprint = Blueprint('trip_blueprint', __name__, template_folder='templates', url_prefix='/trips',
@@ -32,5 +29,9 @@ def addtrip():
 
 @trip_blueprint.route('/', methods=['GET'])
 def trips():
-    cursor = db.session.execute("""SELECT "tripName", "tripDateFrom", "tripDateTo" from "trips" WHERE "userID" = '{userID_}'""".format(userID_=current_user.id))
+    cursor = db.session.execute("""SELECT "tripName", "tripDateFrom", "tripDateTo", "viewsNum" from "trips" WHERE "userID" = '{userID_}'""".format(userID_=current_user.id))
     return render_template('/trip.html', trips = cursor.fetchall())
+
+@trip_blueprint.route('/<tripName>/itineraries', methods=[''])
+def addItinerary(tripName):
+    return "Hello World!"

@@ -44,7 +44,6 @@ def mock(Tripname):
     label = verify()
     return render_template('view_trip.html', title=trips.tripName, trips=trips, label=label)
 
-@landing_blueprint.route('/trip-plans/')
 @landing_blueprint.route('/trip-plans/<linklabel>', methods=['GET','POST'])
 def view_each(linklabel='all trips made in this site'):
     label=verify()
@@ -92,10 +91,10 @@ def paginate(index):
         fromL.append(trip.tripDateFrom)
         toL.append(trip.tripDateTo)
         tripViews.append(trip.viewsNum)
-    determiner = trips.has_next
+        determiner = trips.has_next
     return jsonify(result1=tripnameL, result2=fromL, result3=toL, result4=tripViews, size=len(tripnameL), determiner=determiner)
 
-@landing_blueprint.route('/sendRepsonse')
+@landing_blueprint.route('/sendResponse')
 def sendMail():
     body = "From: %s \n Email: %s \n Message: %s" % (request.args.get('name'), request.args.get('email'), request.args.get('body'))
     send_email('TravelPlanner', 'travelplannerSy@gmail.com', ['travelplannerSy@gmail.com'], body)

@@ -107,7 +107,6 @@ def user_profile(username):
     return render_template('users/userprofile.html', user=user)
 
 @auth_blueprint.route('/userprofile/<username>/edit', methods=['GET', 'POST'])
-@auth_blueprint.route('/userprofile/edit/<username>', methods=['GET', 'POST'])
 @login_required
 @required_roles('User')
 def edit(username):
