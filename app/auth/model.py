@@ -51,6 +51,20 @@ class User(db.Model, UserMixin):
         self.description = ""
         self.profile_pic = "default"
 
+    def create(self, username, email, password, role_id, first_name, last_name, address, city, country, birth_date, contact_num, description):
+        self.username = username
+        self.email = email
+        self.password = generate_password_hash(password)
+        self.role_id = role_id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.address = address
+        self.city = city
+        self.country = country
+        self.birth_date = birth_date
+        self.contact_num = contact_num
+        self.description = description
+
     def isAuthenticated(self):
         return True
  
@@ -136,7 +150,13 @@ class Connection(db.Model):
     # to handle multiple join paths in the square brackets of foreign_keys per below
     user_a = db.relationship("User", foreign_keys=[user_a_id], backref=db.backref("sent_connections"))
     user_b = db.relationship("User", foreign_keys=[user_b_id], backref=db.backref("received_connections"))
-
+    
+    def __init__(self, connection_id, user_a_id, user_b_id, status):
+        self.connection_id = connection_id
+        self.user_a_id = user_a_id
+        self.user_b_id = user_b_id
+        self.status = status
+        
     def __repr__(self):
         return "<Connection connection_id=%s user_a_id=%s user_b_id=%s status=%s>" % (self.connection_id,
                                                                                       self.user_a_id,

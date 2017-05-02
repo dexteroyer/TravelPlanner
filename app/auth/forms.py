@@ -39,6 +39,9 @@ class RegisterForm(Form):
 
 
 class EditForm(Form):
+    username = StringField('Username', validators=[DataRequired()])
+    role_id = StringField('Role ID', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired(), Length(min=6, max=25)])
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
@@ -48,6 +51,15 @@ class EditForm(Form):
     contact_num = IntegerField('Contact Number', validators=[DataRequired()])
     description = StringField('Description')
     file = FileField('Choose Profile Picture', validators=[DataRequired()])
+    
+class TripForm(Form):
+    tripID = StringField('Trip ID', validators=[DataRequired])
+    tripName = StringField('Trip Name', validators=[DataRequired()])
+    tripDateFrom = DateField('Date From(mm/dd/yyyy', format='%m/%d/%Y', validators=[DataRequired()])
+    tripDateTo = DateField('Date To(mm/dd/yyyy', format='%m/%d/%Y', validators=[DataRequired()])
+    id = StringField('User ID', validators=[DataRequired()])
+    viewsNumber = IntegerField('Number of Views', validators=[DataRequired()])
+    img_thumbnail = StringField('Image Thumbnail', validators=[DataRequired()])
 
 
 class SearchForm(Form):
