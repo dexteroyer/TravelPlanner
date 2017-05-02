@@ -51,13 +51,14 @@
         </nav>
 
         <!--intro section-->
-        <section id="intro" class="intro-section">            
+        <section id="intro" class="intro-section" style="background-image: url('https://unsplash.it/1900/1080/?random');">            
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2 text-center">
-                        <h1>Best choice for your web app. Simple and Clean Boostrap admin template </h1>
-                        <p>
-                            Float is a simple and flat design bootstrap3 template, Its include tons of UI elements, SASS files for easy customization, 60+ ready to use pages, 40+ Powerful plugins, Light & dark, horizontal navigation styles and custom widgets. All of these awesome features allows you to create any type of web applications.
+                        <h1><span class="text-indigo">TravelPlanner is your one stop place for new kinds of experiences</span> </h1>
+                        <p class="text-indigo">
+                            This is not just your ordinary travel planning tool, it is equiped with in-demand features that adapts to current 
+                            users needs. Supplying not only the basic and usable function but also the most fun part is that TravelPlanner allows connections and collaboration and sharing trips between users. 
                         </p>
                         <div class="buttons smooth-scroll">
                             <a href="#features" class="btn btn-white btn-lg btn-rounded">Learn More</a>
@@ -67,6 +68,16 @@
                 </div>
             </div>
         </section>
+        <div class="intro-mockup">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 text-center">
+                        <!--!<img src="http://wpthemess.net/wp-content/uploads/2014/05/metris-wordpress-theme-responsive.png" alt="" class="img-responsive">-->
+                        <img src="{{ url_for('.static', filename='images/misc/device.png') }}" alt="" class="img-responsive">
+                    </div>
+                </div>
+            </div>
+        </div>
         <!--intro section-->
 
 
@@ -194,7 +205,7 @@
                                 <div class="panel panel-default bootcards-media" style="width:100%;"> 
                                     <div class="panel-heading" align="left" style="width: 100%;">{{ trip.tripName }}</div>
                                     <div class="panel-body" style="width: 100%; height: 100%;" align="center">
-                                    <img style="height: 100%; width: 100%; object-fit:contain;" src="https://i.ytimg.com/vi/QGiJFumHUPo/maxresdefault.jpg"/></div>
+                                    <img style="height: 100%; width: 100%; object-fit:contain;" src="{{ url_for('trip_blueprint.static', filename='images/trips/'+trip.img_thumbnail ) }} "/></div>
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
@@ -215,8 +226,8 @@
                 <div class="row">
                     <h3>Newest Trip Plans</h3>
                     <div class="button-bar">
-                            <a id="a" class="btn btn-primary btn-arrow-left" onclick="res_1();" href="javascript:void(0)"><i class="fa fa-chevron-left" aria-hidden="true"></i></a> 
-                            <a id="a" class="btn btn-primary btn-arrow-right" onclick="res();" href="javascript:void(0)"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+                            <a id="a" class="btn btn-primary btn-arrow-left" name="new_prev" onclick="res(0,1);" href="javascript:void(0)"><i class="fa fa-chevron-left" aria-hidden="true"></i></a> 
+                            <a id="a" class="btn btn-primary btn-arrow-right" name="new_next" onclick="res(0,0);" href="javascript:void(0)"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                             <div align="right">
                                 <a href="/main/trip-plans/newest-trip-plans" target="_blank"><font size="3">See all&rarr;</font></a>
                             </div>
@@ -228,7 +239,7 @@
                                 <div class="panel panel-default bootcards-media" style="width:100%;"> 
                                     <div class="panel-heading" align="left" style="width: 100%;">{{ trip.tripName }}</div>
                                     <div class="panel-body" style="width: 100%; height: 100%;" align="center">
-                                    <img style="height: 100%; width: 100%; object-fit:contain;" src="https://i.ytimg.com/vi/QGiJFumHUPo/maxresdefault.jpg"/></div>
+                                    <img style="height: 100%; width: 100%; object-fit:contain;" src="{{ url_for('trip_blueprint.static', filename='images/trips/'+trip.img_thumbnail ) }} "/></div>
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;">
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
@@ -249,8 +260,8 @@
                 <div class="row">
                     <h3>Most Popular</h3>
                     <div class="button-bar">
-                            <a id="a" class="btn btn-primary btn-arrow-left" onclick="res_1_m();" href="javascript:void(0)"><i class="fa fa-chevron-left" aria-hidden="true"></i></a> 
-                            <a id="a" class="btn btn-primary btn-arrow-right" onclick="res_m();" href="javascript:void(0)"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+                            <a id="a" class="btn btn-primary btn-arrow-left" name="most_prev" onclick="res(2,1);" href="javascript:void(0)"><i class="fa fa-chevron-left" aria-hidden="true"></i></a> 
+                            <a id="a" class="btn btn-primary btn-arrow-right" name="most_next" onclick="res(2,0);" href="javascript:void(0)"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                             <div align="right">
                                 <a href="/main/trip-plans/most-popular" target="_blank"><font size="3">See all&rarr;</font></a>
                             </div>
@@ -262,7 +273,7 @@
                                 <div class="panel panel-default bootcards-media" style="width:100%;"> 
                                     <div class="panel-heading" align="left" style="width: 100%;">{{ trip.tripName }}</div>
                                     <div class="panel-body" style="width: 100%; height: 100%;" align="center">
-                                    <img style="height: 100%; width: 100%; object-fit:contain;" src="https://i.ytimg.com/vi/QGiJFumHUPo/maxresdefault.jpg"/></div>
+                                    <img style="height: 100%; width: 100%; object-fit:contain;" src="{{ url_for('trip_blueprint.static', filename='images/trips/'+trip.img_thumbnail ) }} "/></div>
                                     <div class="panel-footer" align="left" style="display: inline-block; width: 100%;"> 
                                         <div class="row">
                                             &nbsp; From: {{ trip.tripDateFrom }} 
@@ -297,7 +308,7 @@
                     <div class="col-sm-4 margin-b-30">
                     </div>
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Malik Maulana</h4>
                         <p>
                             Adviser<br>Mindanao State University-Iligan Institute of Technology
@@ -308,21 +319,21 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Seanne Canoy</h4>
                         <p>
                             BSCS-III Student<br>Mindanao State University-Iligan Institute of Technology
                         </p>
                     </div>  
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Joanna Ompoc</h4>
                         <p>
                             BSCS-III Student<br>Mindanao State University-Iligan Institute of Technology
                         </p>
                     </div>  
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Chezl Van</h4>
                         <p>
                             BSCS-IV Student<br>Mindanao State University-Iligan Institute of Technology
@@ -331,21 +342,21 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Shealtiel Cañon</h4>
                         <p>
                             BSCS-III Student<br>Mindanao State University-Iligan Institute of Technology
                         </p>
                     </div>  
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Dexter Esin</h4>
                         <p>
                             BSCS-IV Student<br>Mindanao State University-Iligan Institute of Technology
                         </p>
                     </div>  
                     <div class="col-sm-4 margin-b-30">
-                        <img style="height: 30%; width: 30%; object-fit:contain;" src="http://img.clipartall.com/45360730647c1f25009879900520a7-mad-scientist-clipart-2850_2667.jpg" alt="" class="img-circle">
+                        <img style="height: 30%; width: 30%; object-fit:contain;" src="{{ url_for('.static', filename='images/misc/ninja-simple-512.png') }}" alt="" class="img-circle">
                         <h4>Earl Mark E. Barangot</h4>
                         <p>
                             BSCS-III Student<br>Mindanao State University-Iligan Institute of Technology

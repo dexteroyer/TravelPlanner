@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, jsonify
+from flask import Flask, render_template, redirect, Blueprint, request, flash, url_for, jsonify, send_from_directory
 from flask_login import current_user
 from flask_login import LoginManager, current_user, AnonymousUserMixin
 from app import db, app
-from decorators import send_email
+from decorators import send_email, verify
 from sqlalchemy import func, desc
 from app.trips.model import Trips
 from model import Anonymous
@@ -16,23 +16,13 @@ login_manager.anonymous_user = Anonymous
 
 POSTS_PER_PAGE = 4
 
-def verify():
-	label =[]
-   	if current_user.isAuthenticated():
-   		label = [current_user.username, "Log Out", "/home", "/logout"]
-   	else:
-   		label = ["Log In", "Sign Up", "/login", "/register"]
-   	return label
-
 @landing_blueprint.route('/')
 @landing_blueprint.route('/index')
 def index():
     label=verify()
-    print label
     trips = Trips.query.order_by(desc(Trips.tripID)).paginate(1, POSTS_PER_PAGE, False)
     trips_for_most = Trips.query.order_by(Trips.tripID).paginate(1, POSTS_PER_PAGE, False)
     return render_template('index.html', title='TravelPlanner-Home', trips=trips, trips_m=trips_for_most, label=label)
-    #return '<h1><a href="/login">Sign In!</a> No account? <a href="/register">Sign Up!</a></h1>'
 
 @landing_blueprint.route('/view/<Tripname>', methods=['GET','POST'])
 def mock(Tripname):
@@ -51,11 +41,11 @@ def view_each(linklabel='all trips made in this site'):
     trips = db.session.query(Trips).filter(func.concat(Trips.tripName, ' ', Trips.tripDateFrom, ' ', Trips.tripDateTo).like('%'+linklabel+'%')).all()
     if linklabel=='most-popular':
         til='Most Popular'
-        trips = Trips.query.order_by(Trips.tripID).all()
+        trips = Trips.query.order_by(Trips.tripID).limit(8).all()
         linklabel='Most Popular'
     elif linklabel=='newest-trip-plans':
         til='Newest Trips'
-        trips = Trips.query.order_by(desc(Trips.tripID)).all()
+        trips = Trips.query.order_by(desc(Trips.tripID)).limit(8).all()
         linklabel='Newest Trip Plans'
     elif linklabel=='all trips made in this site':
         til='All Trips'
@@ -78,12 +68,13 @@ def view_each(linklabel='all trips made in this site'):
 
 @landing_blueprint.route('/paginate/<int:index>')
 def paginate(index):
-    tripnameL, fromL, toL, tripViews = [], [], [], []
+    tripnameL, fromL, toL, tripViews, image, determiner = [], [], [], [], [], True
+    page_string = request.args.get('page')
+    if int(page_string)==3:
+        determiner=False
     if index==1:
-        page_string = request.args.get('page')
         trips = Trips.query.order_by(desc(Trips.tripID)).paginate(int(page_string), POSTS_PER_PAGE, False)
-    elif index==2:
-        page_string = request.args.get('page_1')
+    elif index==3 or index==2:
         trips = Trips.query.order_by(Trips.tripID).paginate(int(page_string), POSTS_PER_PAGE, False)
 
     for trip in trips.items:
@@ -91,8 +82,14 @@ def paginate(index):
         fromL.append(trip.tripDateFrom)
         toL.append(trip.tripDateTo)
         tripViews.append(trip.viewsNum)
+<<<<<<< HEAD
         determiner = trips.has_next
     return jsonify(result1=tripnameL, result2=fromL, result3=toL, result4=tripViews, size=len(tripnameL), determiner=determiner)
+=======
+        image.append(trip.img_thumbnail)
+  
+    return jsonify(result1=tripnameL, result2=fromL, result3=toL, result4=tripViews, result5=image, size=len(tripnameL), determiner=determiner)
+>>>>>>> 7647a4886305eff2d5fa68c7d7479140cc51a8b7
 
 @landing_blueprint.route('/sendResponse')
 def sendMail():
