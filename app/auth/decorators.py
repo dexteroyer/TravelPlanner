@@ -1,7 +1,9 @@
+import os
 from functools import wraps
 from flask import abort, flash
 from flask_login import current_user
 from model import Role, Connection, User, db
+from app.trips.model import Trips
 
 def required_roles(*roles):
    def wrapper(f):
@@ -71,3 +73,10 @@ available_extension = set(['png', 'jpg', 'PNG', 'JPG'])
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in available_extension
+
+def deleteTrip_user(userID):
+    trips = Trips.query.filter_by(userID=userID).all()
+    for trip in trips:
+        os.remove('app/trips/static/images/trips/'+trip.img_thumbnail)
+        db.session.delete(trip)
+    db.session.commit()

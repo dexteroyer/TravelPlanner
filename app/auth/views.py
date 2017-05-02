@@ -4,10 +4,10 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import check_password_hash
 from forms import LoginForm, RegisterForm, EditForm
 from model import User, Role, Anonymous
-from forms import LoginForm, RegisterForm, EditForm, SearchForm
+from forms import LoginForm, RegisterForm, EditForm, SearchForm, AdminEditForm
 from model import User, Role
 from app import db, app
-from decorators import required_roles, get_friends, get_friend_requests, allowed_file
+from decorators import required_roles, get_friends, get_friend_requests, allowed_file, deleteTrip_user
 from app.landing.views import landing_blueprint
 from werkzeug import secure_filename
 from PIL import Image
@@ -55,12 +55,12 @@ def sortuser():
     result = User.query.filter_by(role_id='3')
     return render_template('admin/users.html', result=result)
 
-@auth_blueprint.route('/admin/users/create', methods=['GET', 'POST'])
-@login_required
-@required_roles('Admin')
-def createuser():
-    form = EditForm()
-    return render_template('admin/createusers.html', form = form)
+#@auth_blueprint.route('/admin/users/create', methods=['GET', 'POST'])
+#@login_required
+#@required_roles('Admin')
+#def createuser():
+#    form = AdminEditForm()
+#    return render_template('admin/createusers.html', form = form)
 
 # USERS --> read
 @auth_blueprint.route('/admin/users', methods=['GET','POST'])
@@ -74,7 +74,7 @@ def manageusers():
 @login_required
 @required_roles('Admin')
 def createusers():
-    form = EditForm()
+    form = AdminEditForm()
     return render_template('admin/createusers.html', form=form)
 
 #create
@@ -130,6 +130,9 @@ def editusers(username):
 @required_roles('Admin')
 def deleteusers(username):
     user = User.query.filter_by(username=username).first()
+    deleteTrip_user(user.id)
+    if user.profile_pic!='default':
+        os.remove(img_folder+'users/'+str(user.profile_pic))
     db.session.delete(user)
     db.session.commit()
     result = User.query.all()
@@ -139,15 +142,9 @@ def deleteusers(username):
 @auth_blueprint.route('/admin/trips')
 @login_required
 @required_roles('Admin')
-<<<<<<< HEAD
-def adduser():
-    #return redirect(url_for('auth_blueprint.createusers'))
-    return render_template('admin/createusers.html')
-=======
 def managetrips():
     result = Trips.query.all()
     return render_template('admin/trips.html', result=result)
->>>>>>> 724d37450fc96ad32f6c1b00ded2cacf529b699a
 
 #create
 @auth_blueprint.route('/admin/trips/new')
@@ -208,6 +205,7 @@ def edittrips(tripName):
 @required_roles('Admin')
 def removetrips(tripName):
     trips = Trips.query.filter_by(tripName=tripName).first()
+    os.remove('app/trips/static/images/trips/'+trips.img_thumbnail)
     db.session.delete(trips)
     db.session.commit()
     result = Trips.query.all()
@@ -380,7 +378,7 @@ def login():
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    Role.insert_roles(3)
+    Role.insert_roles()
     if current_user.is_active():
         return redirect(url_for('landing_blueprint.index'))
     else:

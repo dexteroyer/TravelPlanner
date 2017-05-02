@@ -53,3 +53,21 @@ class EditForm(Form):
 class SearchForm(Form):
     search = StringField('',validators=[DataRequired()])
 
+class AdminEditForm(Form):
+    username = StringField('Username', validators=[DataRequired()])
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    country = StringField('Country', validators=[DataRequired()])
+    birth_date = DateField('Birth Date(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    contact_num = IntegerField('Contact Number', validators=[DataRequired()])
+    description = StringField('Description')
+    role_id = IntegerField('Role ID', validators=[DataRequired()])
+
+class TripForm(Form):
+    tripName = StringField('Trip Name', validators=[DataRequired()])
+    tripDateFrom = DateField('From(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    tripDateTo = DateField('To(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
+    file = FileField('Choose Thumbnail', validators=[DataRequired()])
+
