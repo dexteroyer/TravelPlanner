@@ -74,7 +74,7 @@ def manageusers():
 @login_required
 @required_roles('Admin')
 def createusers():
-    form = AdminEditForm()
+    form = EditForm()
     return render_template('admin/createusers.html', form=form)
 
 #create

@@ -65,9 +65,3 @@ class AdminEditForm(Form):
     description = StringField('Description')
     role_id = IntegerField('Role ID', validators=[DataRequired()])
 
-class TripForm(Form):
-    tripName = StringField('Trip Name', validators=[DataRequired()])
-    tripDateFrom = DateField('From(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
-    tripDateTo = DateField('To(mm/dd/yyyy)', format='%m/%d/%Y', validators=[DataRequired()])
-    file = FileField('Choose Thumbnail', validators=[DataRequired()])
-
